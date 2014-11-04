@@ -85,6 +85,23 @@ def rescale(dat,mn,mx):
     m = min(dat.flatten())
     M = max(dat.flatten())
     return (mx-mn)*(dat-m)/(M-m)+mn
+    
+# =========================================================
+def ascol( arr ):
+    '''
+    reshapes row matrix to be a column matrix (N,1).
+    '''
+    if len( arr.shape ) == 1: arr = arr.reshape( ( arr.shape[0], 1 ) )
+    return arr    
+
+# =========================================================
+def writeout( outfolder, item, sz, pdf ):
+    (dirName, fileName) = os.path.split(item)
+    (fileBaseName, fileExtension)=os.path.splitext(fileName)
+    
+    with open(outfolder+os.sep+fileBaseName+'_psd.txt', 'w') as f:
+       np.savetxt(f, np.hstack((ascol(sz),ascol(pdf))), delimiter=', ', fmt='%s')   
+    print 'psd results saved to '+outfolder+os.sep+fileBaseName+'_psd.txt'
 
 # =========================================================
 # =========================================================
@@ -217,6 +234,8 @@ def dgs(folder, density, doplot, resolution):
       # get real scales by multiplying by resolution (mm/pixel)
       scales = scales*resolution
 
+      writeout( outfolder, item, scales, d )
+
       mnsz = np.sum(d*scales)
       print "mean size = ", mnsz 
 
@@ -264,6 +283,22 @@ def dgs(folder, density, doplot, resolution):
          mpl.close()
 
    f_csv.close()
+      
+   x = []; y = []
+   for item in files:
+      (dirName, fileName) = os.path.split(item)
+      (fileBaseName, fileExtension)=os.path.splitext(fileName)
+      tmp = outfolder+os.sep+fileBaseName+'_psd.txt'
+      x.append(np.genfromtxt(tmp, delimiter=',', usecols=0))
+      y.append(np.genfromtxt(tmp, delimiter=',', usecols=1))
+      
+   xi = np.linspace(np.min(x),np.max(x),np.shape(x)[1])   
+   yi = np.interp(xi,np.hstack(x),np.hstack(y))
+   yi = yi/np.sum(yi)   
+
+   with open(outfolder+os.sep+'merged_psd.txt', 'w') as f:
+      np.savetxt(f, np.hstack((ascol(xi),ascol(yi))), delimiter=', ', fmt='%s')   
+   print 'psd results saved to '+outfolder+os.sep+'merged_psd.txt'
 
 # =========================================================
 def get_me(useregion, maxscale, notes, density, mult):
