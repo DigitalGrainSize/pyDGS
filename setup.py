@@ -37,7 +37,7 @@ For more information visit https://github.com/dbuscombe-usgs/pyDGS
  doplot = 0=no, 1=yes [0]
  resolution = spatial resolution of image in mm/pixel [1]
 
-Note that the larger the density parameter, the longer the execution time. If a large density is required, please use the parallelised version of this code, dgs_wav_p.py which uses the joblib library. It should speed things up 10x or more if you have a number of processors 
+Note that the larger the density parameter, the longer the execution time. 
 
 :license:
     GNU Lesser General Public License, Version 3
