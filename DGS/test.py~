@@ -1,0 +1,19 @@
+
+#python -c "import DGS; DGS.test.dotest()"
+import DGS
+import os
+
+__all__ = [
+    'dotest',
+    ]
+
+def dotest():
+   folder = DGS.__path__[0]+os.sep
+   resolution = 1
+   density = 10
+   doplot = 1
+
+   DGS.dgs(folder, density, doplot, resolution)
+
+if __name__ == '__main__':
+   dotest()

@@ -1,0 +1,225 @@
+# encoding: utf-8
+"""
+DGS - a Python framework for 
+
+DGS is an open-source project dedicated to provide a Python framework for
+
+For more information visit https://github.com/dbuscombe-usgs/DGS-python
+
+:license:
+    GNU Lesser General Public License, Version 3
+    (http://www.gnu.org/copyleft/lesser.html)
+    
+    This software is in the public domain because it contains materials that
+    originally came from the United States Geological Survey, an agency of the
+    United States Department of Interior. For more information, 
+    see the official USGS copyright policy at
+    http://www.usgs.gov/visual-id/credit_usgs.html#copyright
+    Any use of trade, product, or firm names is for descriptive purposes only 
+    and does not imply endorsement by the U.S. government.
+    
+"""
+
+from __future__ import division
+import numpy as np
+import matplotlib.pyplot as mpl
+import sys, getopt, os, glob
+from PIL import Image
+import csv
+
+import cwt
+import sgolay
+
+# =========================================================
+def iseven(n):
+   """Return true if n is even."""
+   return n%2==0
+
+# =========================================================
+def isodd(n):
+   """Return true if n is odd."""   
+   return not iseven(n)
+
+# =========================================================
+def rescale(dat,mn,mx):
+    """
+    rescales an input dat between mn and mx
+    """
+    m = min(dat.flatten())
+    M = max(dat.flatten())
+    return (mx-mn)*(dat-m)/(M-m)+mn
+
+# =========================================================
+# =========================================================
+def dgs(folder, density, doplot, resolution):
+
+   print "==========================================="
+   print "======DIGITAL GRAIN SIZE: WAVELET=========="
+   print "==========================================="
+   print "=CALCULATE GRAIN SIZE-DISTRIBUTION FROM AN="
+   print "====IMAGE OF SEDIMENT/GRANULAR MATERIAL===="
+   print "==========================================="
+   print "======A PROGRAM BY DANIEL BUSCOMBE========="
+   print "========USGS, FLAGSTAFF, ARIZONA==========="
+   print "=========REVISION 2.5, NOV 2014============"
+   print "==========================================="
+
+   # exit program if no input folder given
+   if not folder:
+      print 'A folder is required!!!!!!'
+      sys.exit(2)
+
+   # print given arguments to screen and convert data type where necessary
+   if folder:
+      print 'Input folder is ', folder
+   if density:
+      density = np.asarray(density,int)
+      print 'Every '+str(density)+' rows will be processed'
+   if doplot:
+      doplot = np.asarray(doplot,int)
+      print 'Doplot is '+str(doplot)
+   if resolution:
+      resolution = np.asarray(resolution,float)
+      print 'Resolution is '+str(resolution)
+
+   if not density:
+      density = 10
+      print '[Default] Density is '+str(density)
+
+   if not doplot:
+      doplot = 0
+      print '[Default] No plot will be produced. To change this, set doplot to 1'
+
+   if not resolution:
+      resolution = 1
+      print '[Default] Resolution is '+str(resolution)+' mm/pixel'
+
+   # special case = pwd
+   if folder=='pwd':
+      folder = os.getcwd()
+
+   if folder[-1]!=os.sep:
+      folder = folder + os.sep   
+
+   # if make plot
+   if doplot:
+      # if directory does not exist
+      if os.path.isdir(folder+os.sep+"outputs")==False:
+         # create it
+         os.mkdir(folder+os.sep+"outputs")
+
+   maxscale = 8
+   notes = 8
+   
+   #item = 'IMG_0202.JPG'
+   #density = 10
+   #resolution=1
+   #doplot = 1
+   #folder = os.getcwd()+os.sep
+
+   # cover all major file types
+   files1 = glob.glob(folder+os.sep+"*.JPG")
+   files2 = glob.glob(folder+os.sep+"*.jpg")
+   files3 = glob.glob(folder+os.sep+"*.jpeg")
+   files4 = glob.glob(folder+os.sep+"*.TIF")
+   files5 = glob.glob(folder+os.sep+"*.tif")
+   files6 = glob.glob(folder+os.sep+"*.TIFF")
+   files7 = glob.glob(folder+os.sep+"*.tiff")
+   files8 = glob.glob(folder+os.sep+"*.PNG")
+   files9 = glob.glob(folder+os.sep+"*.png")
+
+   files = files1+files2+files3+files4+files5+files6+files7+files8+files9
+
+   csvfilename = folder+"outputs"+os.sep+'dgs_results.txt'
+   f_csv = open(csvfilename, 'ab')
+   csvwriter = csv.writer(f_csv, delimiter=',')
+   csvwriter.writerow(['Image', 'mean','sorting','skewness','kurtosis', 'maxscale', 'notes', 'density', 'resolution'])
+
+   for item in files:
+      try:
+          im = Image.open(item).convert("L")
+      except IOError:
+          print 'cannot open', item
+          sys.exit(2)
+    
+      # convert to numpy array
+      region = np.array(im)
+      nx, ny = np.shape(region)
+      mn = min(nx,ny)
+
+      if isodd(mn/4):
+           window_size = (mn/4)
+      else:
+           window_size = (mn/4)-1
+      Zf = sgolay.sgolay2d( region, window_size, order=3)
+
+      # rescale filtered image to full 8-bit range
+      useregion = rescale(region-Zf.getdata(),0,255)
+      del Zf
+
+      mult = (1/notes)*int(float(100*(1/np.std(region.flatten()))))
+
+      dat = cwt.Cwt(np.asarray(useregion,'int8'), maxscale, notes, density, mult)
+      d = dat.getvar()
+      scales = (np.pi/2)*dat.getscales()
+
+      index = np.nonzero(scales<ny/5)
+      scales = scales[index]
+      d = d[index]
+      d = d/np.sum(d)
+     
+      n = np.r_[0:len(scales)]-(len(scales)-1)/2
+      d = d*np.exp(-(0.5)*((np.pi/2)*n/((len(scales)-1)/2))**2)
+      d = d/np.sum(d)   
+
+      # get real scales by multiplying by resolution (mm/pixel)
+      scales = scales*resolution
+
+      mnsz = np.sum(d*scales)
+      print "mean size = ", mnsz 
+
+      srt = np.sqrt(np.sum(d*((scales-mnsz)**2)))
+      print "stdev = ",srt 
+
+      sk = (sum(d*((scales-mnsz)**3)))/(100*srt**3)
+      print "skewness = ",sk
+
+      kurt = (sum(d*((scales-mnsz)**4)))/(100*srt**4)
+      print "kurtosis = ",kurt
+
+      csvwriter.writerow([item, mnsz, srt, sk, kurt, maxscale, notes, density, resolution])
+
+      if doplot:
+         fig = mpl.figure(1)
+         fig.subplots_adjust(wspace = 0.3, hspace=0.3)
+         mpl.subplot(221)
+         Mim = mpl.imshow(im,cmap=mpl.cm.gray)
+
+         mpl.subplot(222)
+         Mim = mpl.imshow(region,cmap=mpl.cm.gray)
+
+         showim = Image.fromarray(np.uint8(region))
+         size = min(showim.size)
+         originX = int(np.round(showim.size[0] / 2 - size / 2))
+         originY = int(np.round(showim.size[1] / 2 - size / 2))
+         cropBox = (originX, originY, originX + np.asarray(mnsz*5,dtype='int'), originY + np.asarray(mnsz*5,dtype='int'))
+         showim = showim.crop(cropBox)
+
+         mpl.subplot(223)
+         Mim = mpl.imshow(showim,cmap=mpl.cm.gray)
+         mpl.plot([np.shape(showim)[0]/3, np.shape(showim)[0]/3] , [np.shape(showim)[0]/3, np.shape(showim)[0]/3 + mnsz],'r' )
+         mpl.axis('tight')
+
+         mpl.subplot(224)
+         mpl.ylabel('Proportion')
+         mpl.xlabel('Size')
+         mpl.plot(scales,d,'g-')
+
+         (dirName, fileName) = os.path.split(item)
+         (fileBaseName, fileExtension)=os.path.splitext(fileName)
+
+         mpl.savefig(folder+"outputs"+os.sep+fileBaseName+'_res.png')
+         mpl.close()
+
+   f_csv.close()
+
