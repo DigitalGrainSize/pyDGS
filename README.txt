@@ -25,6 +25,15 @@ http://dbuscombe-usgs.github.io/docs/Buscombe2013_Sedimentology_sed12049.pdf
 ### test:
     python -c "import DGS; DGS.test.dotest()"
 
+### processing example:
+    python
+    import DGS
+    density = 10 # process every 10 lines
+    res = 0.01 # mm/pixel
+    doplot = 0 # don't make plots
+    image_folder = '/home/sed_images'
+    DGS.dgs(image_folder,density,doplot,res)
+
  REQUIRED INPUTS:
  folder e.g. '/home/my_sediment_images'
  if 'pwd', then the present directory is analysed

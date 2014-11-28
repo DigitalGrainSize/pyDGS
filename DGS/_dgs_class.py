@@ -27,6 +27,14 @@ For more information visit https://github.com/dbuscombe-usgs/pyDGS
 :test:
     python -c "import DGS; DGS.test.dotest()"
 
+    python
+    import DGS
+    density = 10 # process every 10 lines
+    res = 0.01 # mm/pixel
+    doplot = 0 # don't make plots
+    image_folder = '/home/sed_images'
+    DGS.dgs(image_folder,density,doplot,res)
+
  REQUIRED INPUTS:
  folder e.g. '/home/my_sediment_images'
  if 'pwd', then the present directory is analysed
@@ -187,7 +195,7 @@ def dgs(folder, density, doplot, resolution):
    csvfilename = outfolder+os.sep+'dgs_results.csv'
    f_csv = open(csvfilename, 'ab')
    csvwriter = csv.writer(f_csv, delimiter=',')
-   csvwriter.writerow(['Image', 'mean','sorting','skewness','kurtosis', 'maxscale', 'notes', 'density', 'resolution'])
+   csvwriter.writerow(['Image', 'mean','sorting','skewness','kurtosis', 'maxscale', 'notes', 'density', 'resolution', 'p=.05', 'p=.1', 'p=.16', 'p=.25', 'p=.5', 'p=.75', 'p=.84', 'p=.9', 'p=.95'])
 
    for item in files:
    
@@ -208,7 +216,11 @@ def dgs(folder, density, doplot, resolution):
            window_size = (mn/4)
       else:
            window_size = (mn/4)-1
-      Zf = sgolay.sgolay2d( region, window_size, order=3)
+
+      try:
+         Zf = sgolay.sgolay2d( region, window_size, order=3)
+      except:
+         Zf = sgolay.sgolay2d( region, window_size+1, order=3)     
 
       # rescale filtered image to full 8-bit range
       useregion = rescale(region-Zf.getdata(),0,255)
@@ -248,7 +260,9 @@ def dgs(folder, density, doplot, resolution):
       kurt = (sum(d*((scales-mnsz)**4)))/(100*srt**4)
       print "kurtosis = ",kurt
 
-      csvwriter.writerow([item, mnsz, srt, sk, kurt, maxscale, notes, density, resolution])
+      pd = np.interp([.05,.1,.16,.25,.5,.75,.84,.9,.95],np.hstack((0,np.cumsum(d))), np.hstack((0,scales)) )
+
+      csvwriter.writerow([item, mnsz, srt, sk, kurt, maxscale, notes, density, resolution] + pd.tolist() )
 
       if doplot:
          fig = mpl.figure(1)
@@ -292,13 +306,38 @@ def dgs(folder, density, doplot, resolution):
       x.append(np.genfromtxt(tmp, delimiter=',', usecols=0))
       y.append(np.genfromtxt(tmp, delimiter=',', usecols=1))
       
-   xi = np.linspace(np.min(x),np.max(x),np.shape(x)[1])   
+   try:
+      xi = np.linspace(np.min(x),np.max(x),np.shape(x)[1])   
+   except: # non-uniform x
+      xi = np.linspace(np.min(np.hstack(x)),np.max(np.hstack(x)),len(np.hstack(x))) 
    yi = np.interp(xi,np.hstack(x),np.hstack(y))
    yi = yi/np.sum(yi)   
 
    with open(outfolder+os.sep+'merged_psd.txt', 'w') as f:
       np.savetxt(f, np.hstack((ascol(xi),ascol(yi))), delimiter=', ', fmt='%s')   
    print 'psd results saved to '+outfolder+os.sep+'merged_psd.txt'
+
+   csvfilename = outfolder+os.sep+'dgs_results_merged.csv'
+   f_csv = open(csvfilename, 'ab')
+   csvwriter = csv.writer(f_csv, delimiter=',')
+   csvwriter.writerow(['Image', 'mean','sorting','skewness','kurtosis', 'maxscale', 'notes', 'density', 'resolution', 'p=.05', 'p=.1', 'p=.16', 'p=.25', 'p=.5', 'p=.75', 'p=.84', 'p=.9', 'p=.95'])
+
+   mnsz = np.sum(yi*xi)
+   print "merged mean size = ", mnsz 
+
+   srt = np.sqrt(np.sum(yi*((xi-mnsz)**2)))
+   print "merged stdev = ",srt 
+
+   sk = (sum(yi*((xi-mnsz)**3)))/(100*srt**3)
+   print "merged skewness = ",sk
+
+   kurt = (sum(yi*((xi-mnsz)**4)))/(100*srt**4)
+   print "merged kurtosis = ",kurt
+
+   pd = np.interp([.05,.1,.16,.25,.5,.75,.84,.9,.95],np.hstack((0,np.cumsum(yi))), np.hstack((0,xi)) )
+
+   csvwriter.writerow([item, mnsz, srt, sk, kurt, maxscale, notes, density, resolution] + pd.tolist() )
+   f_csv.close()
 
 # =========================================================
 def get_me(useregion, maxscale, notes, density, mult):

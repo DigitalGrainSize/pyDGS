@@ -27,6 +27,14 @@ For more information visit https://github.com/dbuscombe-usgs/pyDGS
 :test:
     python -c "import DGS; DGS.test.dotest()"
 
+    python
+    import DGS
+    density = 10 # process every 10 lines
+    res = 0.01 # mm/pixel
+    doplot = 0 # don't make plots
+    image_folder = '/home/sed_images'
+    DGS.dgs(image_folder,density,doplot,res)
+
  REQUIRED INPUTS:
  folder e.g. '/home/my_sediment_images'
  if 'pwd', then the present directory is analysed
@@ -52,7 +60,7 @@ Note that the larger the density parameter, the longer the execution time.
     
 """
 
-__version__ = '2.5.2'
+__version__ = '2.5.3'
 
 #-----------------------------------------------------------------------------
 # Imports
