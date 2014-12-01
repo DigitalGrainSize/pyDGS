@@ -66,6 +66,7 @@ import matplotlib.pyplot as mpl
 import sys, getopt, os, glob
 from PIL import Image
 import csv
+import scipy.signal as sp # for polynomial fitting
 
 import cwt
 import sgolay
@@ -319,7 +320,6 @@ def dgs(folder, density, doplot, resolution):
          Zf = sgolay.sgolay2d( region, window_size, order=3).getdata()
       else:
          #Zf = np.mean(region)
-         import scipy.signal as sp # for polynomial fitting
          Zf = sgolay2d_fallback( region, window_size, order=3)
 
       # rescale filtered image to full 8-bit range
