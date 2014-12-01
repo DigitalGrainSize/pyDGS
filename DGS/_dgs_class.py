@@ -163,18 +163,18 @@ def dgs(folder, density, doplot, resolution):
    if folder[-1]!=os.sep:
       folder = folder + os.sep   
 
-   # if make plot
-   if doplot:
-      # if directory does not exist
-      if os.path.isdir(folder+"outputs")==False:
-         # create it
-         try:
-            os.mkdir(folder+os.sep+"outputs")
-            outfolder = folder+os.sep+"outputs" 
-         except:
-            outfolder = os.getcwd()+os.sep+"outputs"
-            if os.path.isdir(outfolder)==False:
-               os.mkdir(outfolder)                              
+   ## if make plot
+   #if doplot:
+   # if directory does not exist
+   if os.path.isdir(folder+"DGS_outputs")==False:
+      # create it
+      try:
+         os.mkdir(folder+os.sep+"DGS_outputs")
+         outfolder = folder+os.sep+"DGS_outputs" 
+      except:
+         outfolder = os.getcwd()+os.sep+"DGS_outputs"
+         if os.path.isdir(outfolder)==False:
+            os.mkdir(outfolder)                              
                   
    maxscale = 8
    notes = 8
