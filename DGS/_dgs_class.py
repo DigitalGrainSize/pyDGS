@@ -315,10 +315,11 @@ def dgs(folder, density, doplot, resolution):
       if iseven(window_size):
          window_size = window_size+1
 
-      #if os.name=='posix':
-      Zf = sgolay.sgolay2d( region, window_size, order=3).getdata()
-      #else:
-      #   Zf = sgolay2d_fallback( region, window_size, order=3)
+      if os.name=='posix':
+         Zf = sgolay.sgolay2d( region, window_size, order=3).getdata()
+      else:
+         #Zf = np.mean(region)
+         Zf = sgolay2d_fallback( region, window_size, order=3)
 
       # rescale filtered image to full 8-bit range
       useregion = rescale(region-Zf[:nx,:ny],0,255)
