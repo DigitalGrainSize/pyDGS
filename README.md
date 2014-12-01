@@ -38,7 +38,7 @@ http://dbuscombe-usgs.github.io/docs/Buscombe2013_Sedimentology_sed12049.pdf
  doplot = 0=no, 1=yes [0]
  resolution = spatial resolution of image in mm/pixel [1]
 
-Note that the larger the density parameter, the longer the execution time. If a large density is required, please use the parallelised version of this code, dgs_wav_p.py which uses the joblib library. It should speed things up 10x or more if you have a number of processors 
+Note that the larger the density parameter, the longer the execution time. 
 
 ### license:
     GNU Lesser General Public License, Version 3
@@ -73,7 +73,7 @@ Buscombe, D. (2013) Transferable Wavelet Method for Grain-Size Distribution from
            dbuscombe@usgs.gov
  First Revision January 18 2013
 
-For more information visit https://github.com/dbuscombe-usgs/DGS-python
+For more information visit https://github.com/dbuscombe-usgs/pyDGS
 
 Please contact:
 dbuscombe@usgs.gov

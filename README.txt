@@ -83,7 +83,7 @@ and Other Natural Granular Patterns, Sedimentology 60, 1709 - 1732
            dbuscombe@usgs.gov
  First Revision January 18 2013
 
-For more information visit https://github.com/dbuscombe-usgs/DGS-python
+For more information visit https://github.com/dbuscombe-usgs/pyDGS
 
 Please contact:
 dbuscombe@usgs.gov
