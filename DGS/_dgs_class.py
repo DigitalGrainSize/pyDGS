@@ -193,10 +193,10 @@ def dgs(folder, density, doplot, resolution):
 
    files = files1+files2+files3+files4+files5+files6+files7+files8+files9
 
-   csvfilename = outfolder+os.sep+'dgs_results.csv'
-   f_csv = open(csvfilename, 'ab')
-   csvwriter = csv.writer(f_csv, delimiter=',')
-   csvwriter.writerow(['Image', 'mean','sorting','skewness','kurtosis', 'maxscale', 'notes', 'density', 'resolution', 'p=.05', 'p=.1', 'p=.16', 'p=.25', 'p=.5', 'p=.75', 'p=.84', 'p=.9', 'p=.95'])
+   #csvfilename = outfolder+os.sep+'dgs_results.csv'
+   #f_csv = open(csvfilename, 'ab')
+   #csvwriter = csv.writer(f_csv, delimiter=',')
+   #csvwriter.writerow(['Image', 'mean','sorting','skewness','kurtosis', 'maxscale', 'notes', 'density', 'resolution', 'p=.05', 'p=.1', 'p=.16', 'p=.25', 'p=.5', 'p=.75', 'p=.84', 'p=.9', 'p=.95'])
 
    for item in files:
    
@@ -263,7 +263,7 @@ def dgs(folder, density, doplot, resolution):
 
       pd = np.interp([.05,.1,.16,.25,.5,.75,.84,.9,.95],np.hstack((0,np.cumsum(d))), np.hstack((0,scales)) )
 
-      csvwriter.writerow([item, mnsz, srt, sk, kurt, maxscale, notes, density, resolution] + pd.tolist() )
+      #csvwriter.writerow([item, mnsz, srt, sk, kurt, maxscale, notes, density, resolution] + pd.tolist() )
 
       if doplot:
          fig = mpl.figure(1)
@@ -297,7 +297,7 @@ def dgs(folder, density, doplot, resolution):
          mpl.savefig(outfolder+os.sep+fileBaseName+'_res.png')
          mpl.close()
 
-   f_csv.close()
+   #f_csv.close()
       
    x = []; y = []
    for item in files:
@@ -318,10 +318,10 @@ def dgs(folder, density, doplot, resolution):
       np.savetxt(f, np.hstack((ascol(xi),ascol(yi))), delimiter=', ', fmt='%s')   
    print 'psd results saved to '+outfolder+os.sep+'merged_psd.txt'
 
-   csvfilename = outfolder+os.sep+'dgs_results_merged.csv'
-   f_csv = open(csvfilename, 'ab')
-   csvwriter = csv.writer(f_csv, delimiter=',')
-   csvwriter.writerow(['Image', 'mean','sorting','skewness','kurtosis', 'maxscale', 'notes', 'density', 'resolution', 'p=.05', 'p=.1', 'p=.16', 'p=.25', 'p=.5', 'p=.75', 'p=.84', 'p=.9', 'p=.95'])
+   #csvfilename = outfolder+os.sep+'dgs_results_merged.csv'
+   #f_csv = open(csvfilename, 'ab')
+   #csvwriter = csv.writer(f_csv, delimiter=',')
+   #csvwriter.writerow(['Image', 'mean','sorting','skewness','kurtosis', 'maxscale', 'notes', 'density', 'resolution', 'p=.05', 'p=.1', 'p=.16', 'p=.25', 'p=.5', 'p=.75', 'p=.84', 'p=.9', 'p=.95'])
 
    mnsz = np.sum(yi*xi)
    print "merged mean size = ", mnsz 
@@ -337,8 +337,8 @@ def dgs(folder, density, doplot, resolution):
 
    pd = np.interp([.05,.1,.16,.25,.5,.75,.84,.9,.95],np.hstack((0,np.cumsum(yi))), np.hstack((0,xi)) )
 
-   csvwriter.writerow([item, mnsz, srt, sk, kurt, maxscale, notes, density, resolution] + pd.tolist() )
-   f_csv.close()
+   #csvwriter.writerow([item, mnsz, srt, sk, kurt, maxscale, notes, density, resolution] + pd.tolist() )
+   #f_csv.close()
 
 # =========================================================
 def get_me(useregion, maxscale, notes, density, mult):
