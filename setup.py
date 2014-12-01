@@ -70,6 +70,7 @@ import inspect
 from distutils.core import setup
 from distutils.extension import Extension
 #from setuptools import setup, Extension
+import numpy as np
 
 # Directory of the current file 
 SETUP_DIRECTORY = os.path.dirname(os.path.abspath(inspect.getfile(
@@ -100,14 +101,18 @@ cmdclass = { }
 
 if USE_CYTHON:
     ext_modules += [
-        Extension("DGS.cwt", [ "DGS/cwt.pyx" ]),
-        Extension("DGS.sgolay", [ "DGS/sgolay.pyx" ]),
+        Extension("DGS.cwt", [ "DGS/cwt.pyx" ],
+        include_dirs=[np.get_include()]),
+        Extension("DGS.sgolay", [ "DGS/sgolay.pyx" ],
+        include_dirs=[np.get_include()]),
     ]
     cmdclass.update({ 'build_ext': build_ext })
 else:
     ext_modules += [
-        Extension("DGS.cwt", [ "DGS/cwt.c" ]),
-        Extension("DGS.sgolay", [ "DGS/sgolay.c" ]),
+        Extension("DGS.cwt", [ "DGS/cwt.c" ],
+        include_dirs=[np.get_include()]),
+        Extension("DGS.sgolay", [ "DGS/sgolay.c" ],
+        include_dirs=[np.get_include()]),
     ]
 install_requires = [
     'numpy','scipy','Pillow','matplotlib',
