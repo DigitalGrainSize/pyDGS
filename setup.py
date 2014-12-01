@@ -143,6 +143,7 @@ def setupPackage():
          cmdclass = cmdclass,
          ext_modules=ext_modules,
          platforms='OS Independent',
+         include_dirs = [np.get_include()],
          package_data={'DGS': ['*.JPG',]}
    )
 
