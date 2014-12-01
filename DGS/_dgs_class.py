@@ -166,11 +166,11 @@ def dgs(folder, density, doplot, resolution):
    ## if make plot
    #if doplot:
    # if directory does not exist
-   if os.path.isdir(folder+"DGS_outputs")==False:
+   if os.path.isdir(os.path.expanduser("~")+os.sep+"DGS_outputs")==False:
       # create it
       try:
-         os.mkdir(folder+os.sep+"DGS_outputs")
-         outfolder = folder+os.sep+"DGS_outputs" 
+         os.mkdir(os.path.expanduser("~")+os.sep+"DGS_outputs")
+         outfolder = os.path.expanduser("~")+os.sep+"DGS_outputs" 
       except:
          outfolder = os.getcwd()+os.sep+"DGS_outputs"
          if os.path.isdir(outfolder)==False:
