@@ -222,7 +222,7 @@ def dgs(folder, density, doplot, resolution):
          window_size = window_size+1
 
       #try:
-      #   Zf = sgolay.sgolay2d( region, window_size, order=3)
+      #   Zf = sgolay.sgolay2d( region, window_size, order=3).getdata()
       #except:
       #   Zf = np.mean(region) #sgolay.sgolay2d( region, window_size+1, order=3)     
       #   print "sgolay failed"
@@ -231,7 +231,7 @@ def dgs(folder, density, doplot, resolution):
       print "filter made"
 
       # rescale filtered image to full 8-bit range
-      useregion = rescale(region-Zf.getdata(),0,255)
+      useregion = rescale(region-Zf,0,255)
       del Zf
 
       mult = (1/notes)*int(float(100*(1/np.std(region.flatten()))))
