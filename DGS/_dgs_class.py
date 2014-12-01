@@ -204,7 +204,6 @@ def dgs(folder, density, doplot, resolution):
       print "Processing image %s" % (item)   
       try:
           im = Image.open(item).convert("L")
-          print "Image loaded"
       except IOError:
           print 'cannot open', item
           sys.exit(2)
@@ -214,8 +213,6 @@ def dgs(folder, density, doplot, resolution):
       nx, ny = np.shape(region)
       mn = min(nx,ny)
 
-      print "converted to numpy array"
-
       if isodd(mn/4):
            window_size = (mn/4)
       else:
@@ -224,14 +221,13 @@ def dgs(folder, density, doplot, resolution):
       if iseven(window_size):
          window_size = window_size+1
 
-      print "window size"
+      #try:
+      #   Zf = sgolay.sgolay2d( region, window_size, order=3)
+      #except:
+      #   Zf = np.mean(region) #sgolay.sgolay2d( region, window_size+1, order=3)     
+      #   print "sgolay failed"
 
-      try:
-         Zf = sgolay.sgolay2d( region, window_size, order=3)
-      except:
-         Zf = np.mean(region) #sgolay.sgolay2d( region, window_size+1, order=3)     
-         print "sgolay failed"
-
+      Zf = np.mean(region)
       print "filter made"
 
       # rescale filtered image to full 8-bit range

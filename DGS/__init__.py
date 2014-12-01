@@ -60,7 +60,7 @@ Note that the larger the density parameter, the longer the execution time.
     
 """
 
-__version__ = '2.5.1.2'
+__version__ = '2.5.1.3'
 
 #-----------------------------------------------------------------------------
 # Imports
