@@ -223,7 +223,7 @@ def dgs(folder, density, doplot, resolution):
 
       if os.name=='posix':
          Zf = sgolay.sgolay2d( region, window_size, order=3).getdata()
-      except:
+      else:
          Zf = np.mean(region)
 
       # rescale filtered image to full 8-bit range
