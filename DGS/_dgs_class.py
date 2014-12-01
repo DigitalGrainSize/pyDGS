@@ -202,7 +202,6 @@ def sgolay2d_fallback( z, window_size, order, derivative=None):
         r = np.linalg.pinv(A)[2].reshape((window_size, -1))
         return sp.fftconvolve(Z, -r, mode='valid'), sp.fftconvolve(Z, -c, mode='valid')
 
-
 # =========================================================
 # =========================================================
 def dgs(folder, density, doplot, resolution):
@@ -323,7 +322,7 @@ def dgs(folder, density, doplot, resolution):
          Zf = sgolay2d_fallback( region, window_size, order=3)
 
       # rescale filtered image to full 8-bit range
-      useregion = rescale(region-Zf,0,255)
+      useregion = rescale(region-Zf[:nx,:ny],0,255)
       del Zf
 
       mult = (1/notes)*int(float(100*(1/np.std(region.flatten()))))
