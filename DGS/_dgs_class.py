@@ -204,7 +204,7 @@ def sgolay2d_fallback( z, window_size, order, derivative=None):
 
 # =========================================================
 # =========================================================
-def dgs(folder, density, doplot, resolution):
+def dgs(folder, density, doplot, resolution, outfolder):
 
    print "==========================================="
    print "======DIGITAL GRAIN SIZE: WAVELET=========="
@@ -234,6 +234,8 @@ def dgs(folder, density, doplot, resolution):
    if resolution:
       resolution = np.asarray(resolution,float)
       print 'Resolution is '+str(resolution)
+   if outfolder:
+      print 'Resolution is '+outfolder
 
    if not density:
       density = 10
@@ -254,10 +256,9 @@ def dgs(folder, density, doplot, resolution):
    if folder[-1]!=os.sep:
       folder = folder + os.sep   
 
+   if not outfolder:
+      outfolder = os.path.expanduser("~")+os.sep+"DGS_outputs"
 
-   outfolder = os.path.expanduser("~")+os.sep+"DGS_outputs"
-   ## if make plot
-   #if doplot:
    # if directory does not exist
    if os.path.isdir(outfolder)==False:
       # create it
