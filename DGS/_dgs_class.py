@@ -34,11 +34,14 @@ For more information visit https://github.com/dbuscombe-usgs/pyDGS
     doplot = 0 # don't make plots
     image_folder = '/home/sed_images'
     DGS.dgs(image_folder,density,doplot,res)
+    image_file = '/home/sed_images/my_image.png'
+    mnsz, srt, sk, kurt, pd = DGS.dgs(image_file,density,doplot,res)
 
  REQUIRED INPUTS:
  folder e.g. '/home/my_sediment_images'
  if 'pwd', then the present directory is analysed
-
+ or simply a single file
+ 
  OPTIONAL INPUTS [default values]
  density = process every density lines of image [10]
  doplot = 0=no, 1=yes [0]
@@ -204,7 +207,7 @@ def sgolay2d_fallback( z, window_size, order, derivative=None):
 
 # =========================================================
 # =========================================================
-def dgs(folder, density, doplot, resolution, outfolder):
+def dgs(folder, density, doplot, resolution):
 
    print "==========================================="
    print "======DIGITAL GRAIN SIZE: WAVELET=========="
@@ -214,7 +217,7 @@ def dgs(folder, density, doplot, resolution, outfolder):
    print "==========================================="
    print "======A PROGRAM BY DANIEL BUSCOMBE========="
    print "========USGS, FLAGSTAFF, ARIZONA==========="
-   print "=========REVISION 2.5, NOV 2014============"
+   print "========REVISION 2.5.6, FEB 2015==========="
    print "==========================================="
 
    # exit program if no input folder given
@@ -234,8 +237,6 @@ def dgs(folder, density, doplot, resolution, outfolder):
    if resolution:
       resolution = np.asarray(resolution,float)
       print 'Resolution is '+str(resolution)
-   if outfolder:
-      print 'Resolution is '+outfolder
 
    if not density:
       density = 10
@@ -253,11 +254,17 @@ def dgs(folder, density, doplot, resolution, outfolder):
    if folder=='pwd':
       folder = os.getcwd()
 
-   if folder[-1]!=os.sep:
-      folder = folder + os.sep   
+   if os.path.isdir(folder): #check if folder or file
+      if folder[-1]!=os.sep:
+         folder = folder + os.sep   
+      isfile=0
+      outfolder = folder
+   else: # is a regular file
+      isfile=1
+      outfolder = os.path.dirname(folder) + os.sep
 
-   if not outfolder:
-      outfolder = os.path.expanduser("~")+os.sep+"DGS_outputs"
+   #if not outfolder:
+   #   outfolder = os.path.expanduser("~")+os.sep+"DGS_outputs"
 
    # if directory does not exist
    if os.path.isdir(outfolder)==False:
@@ -272,26 +279,37 @@ def dgs(folder, density, doplot, resolution, outfolder):
    maxscale = 8
    notes = 8
 
-   # cover all major file types
-   files1 = glob.glob(folder+os.sep+"*.JPG")
-   files2 = glob.glob(folder+os.sep+"*.jpg")
-   files3 = glob.glob(folder+os.sep+"*.jpeg")
-   files4 = glob.glob(folder+os.sep+"*.TIF")
-   files5 = glob.glob(folder+os.sep+"*.tif")
-   files6 = glob.glob(folder+os.sep+"*.TIFF")
-   files7 = glob.glob(folder+os.sep+"*.tiff")
-   files8 = glob.glob(folder+os.sep+"*.PNG")
-   files9 = glob.glob(folder+os.sep+"*.png")
+   if isfile==0:
+      # cover all major file types
+      files1 = glob.glob(folder+os.sep+"*.JPG")
+      files2 = glob.glob(folder+os.sep+"*.jpg")
+      files3 = glob.glob(folder+os.sep+"*.jpeg")
+      files4 = glob.glob(folder+os.sep+"*.TIF")
+      files5 = glob.glob(folder+os.sep+"*.tif")
+      files6 = glob.glob(folder+os.sep+"*.TIFF")
+      files7 = glob.glob(folder+os.sep+"*.tiff")
+      files8 = glob.glob(folder+os.sep+"*.PNG")
+      files9 = glob.glob(folder+os.sep+"*.png")
 
-   files = files1+files2+files3+files4+files5+files6+files7+files8+files9
+      files = files1+files2+files3+files4+files5+files6+files7+files8+files9
 
-   seen = set()
-   files = [x for x in files if x not in seen and not seen.add(x)]
+      seen = set()
+      files = [x for x in files if x not in seen and not seen.add(x)]
+      
+   else:
+      files = [folder]
 
-   csvfilename = outfolder+os.sep+'dgs_results.csv'
-   f_csv = open(csvfilename, 'ab')
-   csvwriter = csv.writer(f_csv, delimiter=',')
-   csvwriter.writerow(['Image', 'mean','sorting','skewness','kurtosis', 'maxscale', 'notes', 'density', 'resolution', 'p=.05', 'p=.1', 'p=.16', 'p=.25', 'p=.5', 'p=.75', 'p=.84', 'p=.9', 'p=.95'])
+   try:
+      csvfilename = outfolder+os.sep+'dgs_results.csv'
+      f_csv = open(csvfilename, 'ab')
+      csvwriter = csv.writer(f_csv, delimiter=',')
+      csvwriter.writerow(['Image', 'mean','sorting','skewness','kurtosis', 'maxscale', 'notes', 'density', 'resolution', 'p=.05', 'p=.1', 'p=.16', 'p=.25', 'p=.5', 'p=.75', 'p=.84', 'p=.9', 'p=.95'])
+   except:
+      outfolder = os.path.expanduser("~")+os.sep+"DGS_outputs"
+      csvfilename = outfolder+os.sep+'dgs_results.csv'
+      f_csv = open(csvfilename, 'ab')
+      csvwriter = csv.writer(f_csv, delimiter=',')
+      csvwriter.writerow(['Image', 'mean','sorting','skewness','kurtosis', 'maxscale', 'notes', 'density', 'resolution', 'p=.05', 'p=.1', 'p=.16', 'p=.25', 'p=.5', 'p=.75', 'p=.84', 'p=.9', 'p=.95'])   
 
    for item in files:
    
@@ -438,6 +456,9 @@ def dgs(folder, density, doplot, resolution, outfolder):
 
    csvwriter.writerow([item, mnsz, srt, sk, kurt, maxscale, notes, density, resolution] + pd.tolist() )
    f_csv.close()
+   
+   if isfile==1:
+      return mnsz, srt, sk, kurt, pd
 
 # =========================================================
 def get_me(useregion, maxscale, notes, density, mult):
