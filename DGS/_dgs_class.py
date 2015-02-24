@@ -15,6 +15,7 @@ http://dbuscombe-usgs.github.io/docs/Buscombe2013_Sedimentology_sed12049.pdf
            United States Geological Survey
            Flagstaff, AZ 86001
            dbuscombe@usgs.gov
+ Revision Feb 23, 2015
  First Revision January 18 2013   
 
 For more information visit https://github.com/dbuscombe-usgs/pyDGS
@@ -63,7 +64,7 @@ Note that the larger the density parameter, the longer the execution time.
     
 """
 
-from __future__ import division
+#from __future__ import division
 import numpy as np
 import matplotlib.pyplot as mpl
 import sys, getopt, os, glob
@@ -327,9 +328,9 @@ def dgs(folder, density, doplot, resolution):
       mn = min(nx,ny)
 
       if isodd(mn/4):
-           window_size = (mn/4)
+           window_size = (int(mn/4))
       else:
-           window_size = (mn/4)-1
+           window_size = (int(mn/4))-1
 
       if iseven(window_size):
          window_size = window_size+1

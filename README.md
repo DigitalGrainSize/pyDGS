@@ -74,6 +74,7 @@ Buscombe, D. (2013) Transferable Wavelet Method for Grain-Size Distribution from
            United States Geological Survey
            Flagstaff, AZ 86001
            dbuscombe@usgs.gov
+ Revision Feb 23, 2015
  First Revision January 18 2013
 
 For more information visit https://github.com/dbuscombe-usgs/pyDGS

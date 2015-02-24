@@ -16,6 +16,7 @@ http://dbuscombe-usgs.github.io/docs/Buscombe2013_Sedimentology_sed12049.pdf
            United States Geological Survey
            Flagstaff, AZ 86001
            dbuscombe@usgs.gov
+ Revision Feb 23, 2015
  First Revision January 18 2013   
 
 For more information visit https://github.com/dbuscombe-usgs/pyDGS
@@ -147,7 +148,7 @@ def setupPackage():
          ext_modules=ext_modules,
          platforms='OS Independent',
          include_dirs = [np.get_include()],
-         package_data={'DGS': ['*.JPG',]}
+         package_data={'DGS': ['*.JPG','*.jpg',]}
    )
 
 if __name__ == '__main__':
