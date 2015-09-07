@@ -114,7 +114,7 @@ I recommend the Anaconda python distribution for Windows which includes all of t
 
 ```
 pip install pyDGS
-python -c "import DGS; DGS.test()"
+python -c "import DGS; DGS.test.dotest()"
 ```
 
 ### Contributing & Credits

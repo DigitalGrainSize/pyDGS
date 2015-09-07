@@ -122,7 +122,7 @@ To run the test images, launch the Anaconda command terminal and type:
 
 ```
 pip install pyDGS
-python -c "import DGS; DGS.test()"
+python -c "import DGS; DGS.test.dotest()"
 ```
 
 ### Contributing & Credits
