@@ -25,7 +25,7 @@ http://dbuscombe-usgs.github.io/docs/Buscombe2013_Sedimentology_sed12049.pdf
 ### test:
     python -c "import DGS; DGS.test.dotest()"
 
-### processing example:
+### processing example on a folder of images:
     python
     import DGS
     density = 10 # process every 10 lines
@@ -35,17 +35,70 @@ http://dbuscombe-usgs.github.io/docs/Buscombe2013_Sedimentology_sed12049.pdf
     DGS.dgs(image_folder,density,doplot,res)
     image_file = '/home/sed_images/my_image.png'
     mnsz, srt, sk, kurt, pd = DGS.dgs(image_file,density,doplot,res)
-    
+
  REQUIRED INPUTS:
  folder e.g. '/home/my_sediment_images'
  if 'pwd', then the present directory is analysed
  or simply a single file
  
- OPTIONAL INPUTS [default values]
- density = process every density lines of image [10]
- doplot = 0=no, 1=yes [0]
- resolution = spatial resolution of image in mm/pixel [1]
+ OPTIONAL INPUTS [default values][range of acceptable values]
+ density = process every density lines of image [10][1 - 100]
+ resolution = spatial resolution of image in mm/pixel [1][>0]
+ dofilter = spatial resolution of image in mm/pixel [1][0 or 1]
+ notes = notes per octave to consider in continuous wavelet transform [8][1 - 8]
+ maxscale = maximum scale (pixels) as an inverse function of data (image row) length [8][2 - 40]
+ doplot = 0=no, 1=yes [0][0 or 1]
 
+OUTPUT FOR A DIRECTORY OF FILES:
+A text file per image
+
+OUTPUT FOR A SINGLE IMAGE FILE:
+A dictionary objects containing the following key/value pairs:
+* mean grain size: arithmetic mean grain size
+* grain size sorting: arithmetic standard deviation of grain sizes
+* grain size skewness: arithmetic skewness of grain size-distribution
+* grain size kurtosis: arithmetic kurtosis of grain-size distribution
+* percentiles: 5th, 10th, 16th, 25th, 50th, 75th, 84th, 90th, and 95th percentile of the cumulative grain size (% less than) particle size distribution
+* grain size frequencies: the normalised frequencies associated with 'grain size bins'
+* grain size bins: grain size values at which the distribution is evaluated
+
+
+### processing example on one image:
+    python
+    import DGS
+
+    image_file = '/home/sed_images/my_image.png'
+
+    density = 10 # process every 10 lines
+    resolution = 0.01 # mm/pixel
+    dofilter =1 # filter the image
+    notes = 8 # notes per octave
+    maxscale = 8 #Max scale as inverse fraction of data length
+    verbose = 1 # print stuff to screen
+    dgs_stats = DGS.dgs_web(image_file, density, resolution, dofilter, maxscale, notes, verbose)
+
+ REQUIRED INPUTS:
+ simply a single file path
+ 
+ OPTIONAL INPUTS [default values][range of acceptable values]
+ density = process every *density* lines of image [10][1 - 100]
+ resolution = spatial resolution of image in mm/pixel [1][>0]
+ dofilter = spatial resolution of image in mm/pixel [1][0 or 1]
+ notes = notes per octave to consider in continuous wavelet transform [8][1 - 8]
+ maxscale = maximum scale (pixels) as an inverse function of data (image row) length [8][2 - 40]
+ verbose = if 1, print stuff to screen [0][0 or 1]
+
+OUTPUT:
+A dictionary objects containing the following key/value pairs:
+* mean grain size: arithmetic mean grain size
+* grain size sorting: arithmetic standard deviation of grain sizes
+* grain size skewness: arithmetic skewness of grain size-distribution
+* grain size kurtosis: arithmetic kurtosis of grain-size distribution
+* percentiles: 5th, 10th, 16th, 25th, 50th, 75th, 84th, 90th, and 95th percentile of the cumulative grain size (% less than) particle size distribution
+* grain size frequencies: the normalised frequencies associated with 'grain size bins'
+* grain size bins: grain size values at which the distribution is evaluated
+
+PROCESSING NOTES:
 Note that the larger the density parameter, the longer the execution time. 
 
 ### license:
@@ -69,7 +122,7 @@ To run the test images, launch the Anaconda command terminal and type:
 
 ```
 pip install pyDGS
-python -c "import DGS; DGS.test.dotest()"
+python -c "import DGS; DGS.test()"
 ```
 
 ### Contributing & Credits

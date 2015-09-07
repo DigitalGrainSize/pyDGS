@@ -26,7 +26,7 @@ For more information visit https://github.com/dbuscombe-usgs/pyDGS
     pip install pyDGS
     
 :test:
-    python -c "import DGS; DGS.test.dotest_folder()"
+    python -c "import DGS; DGS.test.dotest()"
 
     python
     import DGS
@@ -43,27 +43,10 @@ For more information visit https://github.com/dbuscombe-usgs/pyDGS
  if 'pwd', then the present directory is analysed
  or simply a single file
  
- OPTIONAL INPUTS [default values][range of acceptable values]
- density = process every density lines of image [10][1 - 100]
- resolution = spatial resolution of image in mm/pixel [1][>0]
- dofilter = spatial resolution of image in mm/pixel [1][0 or 1]
- notes = notes per octave to consider in continuous wavelet transform [8][1 - 8]
- maxscale = maximum scale (pixels) as an inverse function of data (image row) length [8][2 - 40]
- doplot = 0=no, 1=yes [0][0 or 1]
-
-OUTPUT FOR A DIRECTORY OF FILES:
-A text file per image
-
-OUTPUT FOR A SINGLE IMAGE FILE:
-A dictionary objects containing the following key/value pairs:
-* mean grain size: arithmetic mean grain size
-* grain size sorting: arithmetic standard deviation of grain sizes
-* grain size skewness: arithmetic skewness of grain size-distribution
-* grain size kurtosis: arithmetic kurtosis of grain-size distribution
-* percentiles: 5th, 10th, 16th, 25th, 50th, 75th, 84th, 90th, and 95th percentile of the cumulative grain size (% less than) particle size distribution
-* grain size frequencies: the normalised frequencies associated with 'grain size bins'
-* grain size bins: grain size values at which the distribution is evaluated
-
+ OPTIONAL INPUTS [default values]
+ density = process every density lines of image [10]
+ doplot = 0=no, 1=yes [0]
+ resolution = spatial resolution of image in mm/pixel [1]
 
 Note that the larger the density parameter, the longer the execution time. 
 
@@ -81,20 +64,21 @@ Note that the larger the density parameter, the longer the execution time.
     
 """
 
+#from __future__ import division
 import numpy as np
+import matplotlib.pyplot as mpl
 import sys, getopt, os, glob
-from PIL.Image import open as imopen
+from PIL import Image
 import csv
+import scipy.signal as sp # for polynomial fitting
 
 import cwt
 import sgolay
 
-# suppress divide and invalid warnings
-np.seterr(divide='ignore')
-np.seterr(invalid='ignore')
-
-import warnings
-warnings.filterwarnings("ignore")
+__all__ = [
+    'dgs',
+    'get_me',
+    ]
 
 # =========================================================
 def iseven(n):
@@ -133,14 +117,98 @@ def writeout( outfolder, item, sz, pdf ):
     print 'psd results saved to '+outfolder+os.sep+fileBaseName+'_psd.txt'
 
 # =========================================================
-def get_me(useregion, maxscale, notes, density):
-   dat = cwt.Cwt(np.asarray(useregion,'int8'), maxscale, notes, density)
-   return dat.getvar(), (np.pi/2)*dat.getscales()
+def sgolay2d_fallback( z, window_size, order, derivative=None):
+    """
+    do 2d filtering on matrix
+    from http://www.scipy.org/Cookbook/SavitzkyGolay
+    """
+    # number of terms in the polynomial expression
+    n_terms = ( order + 1 ) * ( order + 2)  / 2.0
 
+    if  window_size % 2 == 0:
+        raise ValueError('window_size must be odd')
+
+    if window_size**2 < n_terms:
+        raise ValueError('order is too high for the window size')
+
+    half_size = window_size // 2
+
+    # exponents of the polynomial. 
+    # p(x,y) = a0 + a1*x + a2*y + a3*x^2 + a4*y^2 + a5*x*y + ... 
+    # this line gives a list of two item tuple. Each tuple contains 
+    # the exponents of the k-th term. First element of tuple is for x
+    # second element for y.
+    # Ex. exps = [(0,0), (1,0), (0,1), (2,0), (1,1), (0,2), ...]
+    exps = [ (k-n, n) for k in range(order+1) for n in range(k+1) ]
+
+    # coordinates of points
+    ind = np.arange(-half_size, half_size+1, dtype=np.float64)
+    dx = np.repeat( ind, window_size )
+    dy = np.tile( ind, [window_size, 1]).reshape(window_size**2, )
+
+    # build matrix of system of equation
+    A = np.empty( (window_size**2, len(exps)) )
+    for i, exp in enumerate( exps ):
+        A[:,i] = (dx**exp[0]) * (dy**exp[1])
+
+    # pad input array with appropriate values at the four borders
+    new_shape = z.shape[0] + 2*half_size, z.shape[1] + 2*half_size
+    Z = np.zeros( (new_shape) )
+    # top band
+    band = z[0, :]
+    Z[:half_size, half_size:-half_size] =  band -  np.abs( np.flipud( z[1:half_size+1, :] ) - band )
+    # bottom band
+    band = z[-1, :]
+    Z[-half_size:, half_size:-half_size] = band  + np.abs( np.flipud( z[-half_size-1:-1, :] )  -band )
+    # left band
+    band = np.tile( z[:,0].reshape(-1,1), [1,half_size])
+    Z[half_size:-half_size, :half_size] = band - np.abs( np.fliplr( z[:, 1:half_size+1] ) - band )
+    # right band
+    band = np.tile( z[:,-1].reshape(-1,1), [1,half_size] )
+    Z[half_size:-half_size, -half_size:] =  band + np.abs( np.fliplr( z[:, -half_size-1:-1] ) - band )
+    # central band
+    Z[half_size:-half_size, half_size:-half_size] = z
+
+    # top left corner
+    band = z[0,0]
+    Z[:half_size,:half_size] = band - np.abs( np.flipud(np.fliplr(z[1:half_size+1,1:half_size+1]) ) - band )
+    # bottom right corner
+    band = z[-1,-1]
+    Z[-half_size:,-half_size:] = band + np.abs( np.flipud(np.fliplr(z[-half_size-1:-1,-half_size-1:-1]) ) - band )
+
+    # top right corner
+    band = Z[half_size,-half_size:]
+    Z[:half_size,-half_size:] = band - np.abs( np.flipud(Z[half_size+1:2*half_size+1,-half_size:]) - band )
+    # bottom left corner
+    band = Z[-half_size:,half_size].reshape(-1,1)
+    Z[-half_size:,:half_size] = band - np.abs( np.fliplr(Z[-half_size:, half_size+1:2*half_size+1]) - band )
+
+    # solve system and convolve
+    if derivative == None:
+        m = np.linalg.pinv(A)[0].reshape((window_size, -1))
+        Z = Z.astype('f')
+        m = m.astype('f')
+        return sp.fftconvolve(Z, m, mode='valid')
+    elif derivative == 'col':
+        A = A.astype('f')
+        c = np.linalg.pinv(A)[1].reshape((window_size, -1))
+        Z = Z.astype('f')
+        return sp.fftconvolve(Z, -c, mode='valid')
+    elif derivative == 'row':
+        A = A.astype('f')
+        Z = Z.astype('f')
+        r = np.linalg.pinv(A)[2].reshape((window_size, -1))
+        return sp.fftconvolve(Z, -r, mode='valid')
+    elif derivative == 'both':
+        A = A.astype('f')
+        Z = Z.astype('f')
+        c = np.linalg.pinv(A)[1].reshape((window_size, -1))
+        r = np.linalg.pinv(A)[2].reshape((window_size, -1))
+        return sp.fftconvolve(Z, -r, mode='valid'), sp.fftconvolve(Z, -c, mode='valid')
 
 # =========================================================
 # =========================================================
-def dgs(folder, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, doplot=1):
+def dgs(folder, density, doplot, resolution):
 
    print "==========================================="
    print "======DIGITAL GRAIN SIZE: WAVELET=========="
@@ -150,7 +218,7 @@ def dgs(folder, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, doplo
    print "==========================================="
    print "======A PROGRAM BY DANIEL BUSCOMBE========="
    print "========USGS, FLAGSTAFF, ARIZONA==========="
-   print "========REVISION 3.0.0, SEPT 2015=========="
+   print "========REVISION 2.5.7, SEPT 2015=========="
    print "==========================================="
 
    # exit program if no input folder given
@@ -161,41 +229,27 @@ def dgs(folder, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, doplo
    # print given arguments to screen and convert data type where necessary
    if folder:
       print 'Input folder is ', folder
-
+   if density:
+      density = np.asarray(density,int)
+      print 'Every '+str(density)+' rows will be processed'
    if doplot:
       doplot = np.asarray(doplot,int)
       print 'Doplot is '+str(doplot)
-
-   if density:
-      density = np.asarray(density,int)
-      print 'Every %s rows will be processed' % (str(density))
-
    if resolution:
       resolution = np.asarray(resolution,float)
-      print 'Resolution is ', str(resolution)
+      print 'Resolution is '+str(resolution)
 
-   if dofilter:
-      dofilter = np.asarray(dofilter,int)
-      if dofilter==1:
-         print 'Image will be filtered'
-      else:
-         print 'Image will not be filtered'
+   if not density:
+      density = 10
+      print '[Default] Density is '+str(density)
 
-   if maxscale:
-      maxscale = np.asarray(maxscale,int)
-      print 'Max scale as inverse fraction of data length: %s' % (str(maxscale))
+   if not doplot:
+      doplot = 0
+      print '[Default] No plot will be produced. To change this, set doplot to 1'
 
-   if notes:
-      notes = np.asarray(notes,int)
-      print 'Analysis of %s sub-octaves per octave' % (str(notes))
-
-
-   if doplot==1:
-      import matplotlib.pyplot as mpl
-      from PIL.Image import fromarray as fromarray
-
-   # ======= stage 1 ==========================
-   # read images
+   if not resolution:
+      resolution = 1
+      print '[Default] Resolution is '+str(resolution)+' mm/pixel'
 
    # special case = pwd
    if folder=='pwd':
@@ -210,6 +264,9 @@ def dgs(folder, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, doplo
       isfile=1
       outfolder = os.path.dirname(folder) + os.sep
 
+   #if not outfolder:
+   #   outfolder = os.path.expanduser("~")+os.sep+"DGS_outputs"
+
    # if directory does not exist
    if os.path.isdir(outfolder)==False:
       # create it
@@ -220,6 +277,8 @@ def dgs(folder, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, doplo
          if os.path.isdir(outfolder)==False:
             os.mkdir(outfolder)                              
                   
+   maxscale = 8
+   notes = 8
 
    if isfile==0:
       # cover all major file types
@@ -258,7 +317,7 @@ def dgs(folder, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, doplo
       print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
       print "Processing image %s" % (item)   
       try:
-          im = imopen(item).convert("L")
+          im = Image.open(item).convert("L")
       except IOError:
           print 'cannot open', item
           sys.exit(2)
@@ -268,41 +327,33 @@ def dgs(folder, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, doplo
       nx, ny = np.shape(region)
       mn = min(nx,ny)
 
-      # ======= stage 2 ==========================
-      # if requested, call sgolay to filter image
-      if dofilter==1:
-         if isodd(mn/4):
-              window_size = (int(mn/4))
-         else:
-              window_size = (int(mn/4))-1
+      if isodd(mn/4):
+           window_size = (int(mn/4))
+      else:
+           window_size = (int(mn/4))-1
 
-         if iseven(window_size):
-            window_size = window_size+1
+      if iseven(window_size):
+         window_size = window_size+1
 
+      if os.name=='posix':
          Zf = sgolay.sgolay2d( region, window_size, order=3).getdata()
+      else:
+         #Zf = np.mean(region)
+         Zf = sgolay2d_fallback( region, window_size, order=3)
 
-         # rescale filtered image to full 8-bit range
-         useregion = rescale(region-Zf[:nx,:ny],0,255)
-         del Zf
+      # rescale filtered image to full 8-bit range
+      useregion = rescale(region-Zf[:nx,:ny],0,255)
+      del Zf
 
-      else: #no filtering
-         useregion = rescale(region,0,255)
+      mult = (1/notes)*int(float(100*(1/np.std(region.flatten()))))
 
-      # ======= stage 3 ==========================
-      # call cwt to get particle size distribution
-      d, scales = get_me(useregion, maxscale, notes, density) #mult
-      d = d/np.sum(d)
-      d = d/(scales**0.5)
-      d = d/np.sum(d)
+      #dat = cwt.Cwt(np.asarray(useregion,'int8'), maxscale, notes, density, mult)
+      #d = dat.getvar()
+      #scales = (np.pi/2)*dat.getscales()
+      
+      d, scales = get_me(useregion, maxscale, notes, density, mult)
 
-      # ======= stage 4 ==========================
-      # trim particle size bins
-      index = np.nonzero(scales<ny/3)
-      scales = scales[index]
-      d = d[index]
-      d = d/np.sum(d)
-
-      index = np.nonzero(scales>np.pi*2)
+      index = np.nonzero(scales<ny/5)
       scales = scales[index]
       d = d[index]
       d = d/np.sum(d)
@@ -332,39 +383,31 @@ def dgs(folder, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, doplo
 
       csvwriter.writerow([item, mnsz, srt, sk, kurt, maxscale, notes, density, resolution] + pd.tolist() )
 
-      if doplot==1:
+      if doplot:
          fig = mpl.figure(1)
-         fig.subplots_adjust(wspace = 0.5, hspace=0.5)
+         fig.subplots_adjust(wspace = 0.3, hspace=0.3)
          mpl.subplot(221)
          Mim = mpl.imshow(im,cmap=mpl.cm.gray)
-         mpl.title('Loaded Image')
-         mpl.setp(mpl.xticks()[1], rotation=30)
 
          mpl.subplot(222)
-         Mim = mpl.imshow(useregion,cmap=mpl.cm.gray)
-         mpl.title('Processed Image')
-         mpl.setp(mpl.xticks()[1], rotation=30)
+         Mim = mpl.imshow(region,cmap=mpl.cm.gray)
 
-         showim = fromarray(np.uint8(region))
+         showim = Image.fromarray(np.uint8(region))
          size = min(showim.size)
          originX = int(np.round(showim.size[0] / 2 - size / 2))
          originY = int(np.round(showim.size[1] / 2 - size / 2))
          cropBox = (originX, originY, originX + np.asarray(mnsz*5,dtype='int'), originY + np.asarray(mnsz*5,dtype='int'))
          showim = showim.crop(cropBox)
 
-         mpl.subplot(223, aspect='equal')
+         mpl.subplot(223)
          Mim = mpl.imshow(showim,cmap=mpl.cm.gray)
          mpl.plot([np.shape(showim)[0]/3, np.shape(showim)[0]/3] , [np.shape(showim)[0]/3, np.shape(showim)[0]/3 + mnsz],'r' )
-         mpl.axis('tight'); #mpl.axis('equal'); 
-         mpl.title('Zoomed in portion')
-         mpl.setp(mpl.xticks()[1], rotation=30)
+         mpl.axis('tight')
 
          mpl.subplot(224)
          mpl.ylabel('Proportion')
-         mpl.xlabel('Grain Size')
-         mpl.plot(scales,d,'g-o')
-         mpl.setp(mpl.xticks()[1], rotation=30)
-         mpl.title('Particle Size-Distribution')
+         mpl.xlabel('Size')
+         mpl.plot(scales,d,'g-')
 
          (dirName, fileName) = os.path.split(item)
          (fileBaseName, fileExtension)=os.path.splitext(fileName)
@@ -416,14 +459,10 @@ def dgs(folder, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, doplo
    f_csv.close()
    
    if isfile==1:
-      return {'mean grain size': mnsz, 'grain size sorting': srt, 'grain size skewness': sk, 'grain size kurtosis': kurt, 'percentiles': pd, 'grain size frequencies': d, 'grain size bins': scales}
-
+      return mnsz, srt, sk, kurt, pd
 
 # =========================================================
-# =========================================================
-if __name__ == '__main__':
-
-   dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, doplot=1)
-
-
+def get_me(useregion, maxscale, notes, density, mult):
+   dat = cwt.Cwt(np.asarray(useregion,'int8'), maxscale, notes, density, mult)
+   return dat.getvar(), (np.pi/2)*dat.getscales()
 

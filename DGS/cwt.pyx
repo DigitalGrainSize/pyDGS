@@ -4,6 +4,7 @@
            United States Geological Survey
            Flagstaff, AZ 86001
            dbuscombe@usgs.gov
+ Revision Sept 7, 2015
  First Revision January 18 2013
 
 For more information visit https://github.com/dbuscombe-usgs/DGS-python
@@ -25,7 +26,7 @@ import numpy as np
 cimport numpy as np
 cimport cython
 from libc.math cimport sqrt,log,abs
-from scipy.signal import kaiser
+#from scipy.signal import kaiser
 
 # =========================================================
 cdef class Cwt:
@@ -45,14 +46,14 @@ cdef class Cwt:
     cdef object win
     cdef object density
     cdef object r
-    cdef object mult
+    #cdef object mult
                 
     # =========================================================
     @cython.boundscheck(False)
     @cython.cdivision(True)
     @cython.wraparound(False)
     @cython.nonecheck(False)
-    def __cinit__(self, np.ndarray[np.int8_t, ndim=2] matrix, int largestscale, int notes, int density, float mult):
+    def __cinit__(self, np.ndarray[np.int8_t, ndim=2] matrix, int largestscale, int notes, int density): #, float mult):
         """
         Continuous Morlet wavelet transform of data
 
@@ -65,7 +66,7 @@ cdef class Cwt:
         """
         self.win = np.shape(matrix)[0]
         self.density = density
-        self.mult = mult
+        #self.mult = mult
                 
         cdef float pi = 3.14159265
         
@@ -132,7 +133,7 @@ cdef class Cwt:
         """
         returns a log scale based on notes per ocave
         """
-        cdef float pi = 3.14159265
+        #cdef float pi = 3.14159265
         cdef int noctave = self._log2( ndata/largestscale/2 )
         self.nscale = notes*noctave
         cdef np.ndarray[np.float64_t, ndim=1] scales = np.empty(self.nscale,np.float64)
@@ -200,17 +201,17 @@ cdef class Cwt:
         """
         return variance of wave
         """
-        cdef float pi = 3.14159265
-        cdef np.ndarray n
-        n = np.r_[0:len(self.scales)]-(len(self.scales)-1)/2
+        #cdef float pi = 3.14159265
+        #cdef np.ndarray n
+        #n = np.r_[0:len(self.scales)]-(len(self.scales)-1)/2
         wave = self._getwave()
         
         cdef np.ndarray[np.float64_t, ndim=1] dat= np.empty(len(self.scales), np.float64)
         dat = np.var(np.var(wave.T,axis=1),axis=0)
         dat = dat/np.sum(dat)
         
-        dat = dat*kaiser(len(dat),self.mult)
-        dat = dat/np.sum(dat)
+        #dat = dat*kaiser(len(dat),self.mult)
+        #dat = dat/np.sum(dat)
         
         #dat = dat/np.sum(dat) * np.exp(-(0.5)*((pi/2)*n/((len(self.scales)-1)/2))**2)
         #dat = dat/np.sum(dat)
