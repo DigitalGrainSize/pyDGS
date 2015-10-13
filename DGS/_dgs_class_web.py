@@ -23,7 +23,7 @@ For more information visit https://github.com/dbuscombe-usgs/pyDGS
 :install:
     python setup.py install
     sudo python setup.py install
-    pip install pyDGS
+    pip install pyDGS-web
     
 :test:
     python -c "import DGS; DGS.test.dotest_web()"

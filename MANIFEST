@@ -7,6 +7,8 @@ DGS/IMG_0229.JPG
 DGS/IMG_0249.JPG
 DGS/__init__.py
 DGS/_dgs_class.py
+DGS/_dgs_class_legacy.py
+DGS/_dgs_class_web.py
 DGS/cwt.pyx
 DGS/sgolay.pyx
 DGS/test.py

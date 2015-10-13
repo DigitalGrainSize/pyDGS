@@ -27,24 +27,11 @@ import os
 
 __all__ = [
     'dotest',
-    'dotest_folder',
     'dotest_web',
     ]
 
 def dotest():
-   dotest_folder()
    dotest_web()
-
-def dotest_folder():
-   folder = DGS.__path__[0]+os.sep
-   resolution = 1
-   density = 10
-   dofilter=1
-   maxscale=8
-   notes=8
-   doplot = 1
-
-   DGS.dgs(folder, density, resolution, dofilter, maxscale, notes, doplot)
 
 def dotest_web():
    image= DGS.__path__[0]+os.sep+'IMG_0229.JPG'

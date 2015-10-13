@@ -29,17 +29,6 @@ For more information visit https://github.com/dbuscombe-usgs/pyDGS
 :test:
     python -c "import DGS; DGS.test.dotest()"
 
-:processing example on a folder of images:
-    python
-    import DGS
-    density = 10 # process every 10 lines
-    res = 0.01 # mm/pixel
-    doplot = 0 # don't make plots
-    image_folder = '/home/sed_images'
-    DGS.dgs(image_folder,density,doplot,res)
-    image_file = '/home/sed_images/my_image.png'
-    mnsz, srt, sk, kurt, pd = DGS.dgs(image_file,density,doplot,res)
-
  REQUIRED INPUTS:
  folder e.g. '/home/my_sediment_images'
  if 'pwd', then the present directory is analysed
@@ -69,7 +58,7 @@ A dictionary objects containing the following key/value pairs:
 
 :processing example on one image:
     python
-    import DGS
+    import DGS-web
 
     image_file = '/home/sed_images/my_image.png'
 
@@ -79,7 +68,8 @@ A dictionary objects containing the following key/value pairs:
     notes = 8 # notes per octave
     maxscale = 8 #Max scale as inverse fraction of data length
     verbose = 1 # print stuff to screen
-    dgs_stats = DGS.dgs_web(image_file, density, resolution, dofilter, maxscale, notes, verbose)
+    dgs_stats = DGS-web.dgs_web(image_file, density, resolution, dofilter, maxscale, notes, verbose)
+
 
  REQUIRED INPUTS:
  simply a single file path
@@ -172,7 +162,7 @@ else:
         include_dirs=[np.get_include()]),
     ]
 install_requires = [
-    'numpy','scipy','Pillow','matplotlib', 'cython',
+    'numpy','scipy','Pillow','cython',
 ]
 
 def setupPackage():
