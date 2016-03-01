@@ -20,17 +20,6 @@ http://dbuscombe-usgs.github.io/docs/Buscombe2013_Sedimentology_sed12049.pdf
 ### test:
     python -c "import DGS; DGS.test.dotest()"
 
-### processing example on a folder of images:
-    python
-    import DGS
-    density = 10 # process every 10 lines
-    res = 0.01 # mm/pixel
-    doplot = 0 # don't make plots
-    image_folder = '/home/sed_images'
-    DGS.dgs(image_folder,density,doplot,res)
-    image_file = '/home/sed_images/my_image.png'
-    mnsz, srt, sk, kurt, pd = DGS.dgs(image_file,density,doplot,res)
-
  REQUIRED INPUTS:
  folder e.g. '/home/my_sediment_images'
  if 'pwd', then the present directory is analysed
@@ -43,9 +32,6 @@ http://dbuscombe-usgs.github.io/docs/Buscombe2013_Sedimentology_sed12049.pdf
  notes = notes per octave to consider in continuous wavelet transform [8][1 - 8]
  maxscale = maximum scale (pixels) as an inverse function of data (image row) length [8][2 - 40]
  doplot = 0=no, 1=yes [0][0 or 1]
-
-OUTPUT FOR A DIRECTORY OF FILES:
-A text file per image
 
 OUTPUT FOR A SINGLE IMAGE FILE:
 A dictionary objects containing the following key/value pairs:
@@ -70,7 +56,7 @@ A dictionary objects containing the following key/value pairs:
     notes = 8 # notes per octave
     maxscale = 8 #Max scale as inverse fraction of data length
     verbose = 1 # print stuff to screen
-    dgs_stats = DGS.dgs_web(image_file, density, resolution, dofilter, maxscale, notes, verbose)
+    dgs_stats = DGS.dgs(image_file, density, resolution, dofilter, maxscale, notes, verbose)
 
  REQUIRED INPUTS:
  simply a single file path
@@ -127,7 +113,7 @@ Buscombe, D. (2013) Transferable Wavelet Method for Grain-Size Distribution from
            United States Geological Survey
            Flagstaff, AZ 86001
            dbuscombe@usgs.gov
- Revision Feb 23, 2015
+ Revision Mar 1, 2015
  First Revision January 18 2013
 
 For more information visit https://github.com/dbuscombe-usgs/pyDGS

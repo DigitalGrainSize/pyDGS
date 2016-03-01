@@ -16,7 +16,7 @@ http://dbuscombe-usgs.github.io/docs/Buscombe2013_Sedimentology_sed12049.pdf
            United States Geological Survey
            Flagstaff, AZ 86001
            dbuscombe@usgs.gov
- Revision Sept 7, 2015
+ Revision Mar 1, 2016
  First Revision January 18 2013   
 
 For more information visit https://github.com/dbuscombe-usgs/pyDGS
@@ -27,38 +27,10 @@ For more information visit https://github.com/dbuscombe-usgs/pyDGS
     pip install pyDGS
     
 :test:
-    python -c "import DGS; DGS.test.dotest()"
+    python -c "import DGS; DGS.test.dotest_web()"
 
- REQUIRED INPUTS:
- folder e.g. '/home/my_sediment_images'
- if 'pwd', then the present directory is analysed
- or simply a single file
- 
- OPTIONAL INPUTS [default values][range of acceptable values]
- density = process every density lines of image [10][1 - 100]
- resolution = spatial resolution of image in mm/pixel [1][>0]
- dofilter = spatial resolution of image in mm/pixel [1][0 or 1]
- notes = notes per octave to consider in continuous wavelet transform [8][1 - 8]
- maxscale = maximum scale (pixels) as an inverse function of data (image row) length [8][2 - 40]
- doplot = 0=no, 1=yes [0][0 or 1]
-
-OUTPUT FOR A DIRECTORY OF FILES:
-A text file per image
-
-OUTPUT FOR A SINGLE IMAGE FILE:
-A dictionary objects containing the following key/value pairs:
-* mean grain size: arithmetic mean grain size
-* grain size sorting: arithmetic standard deviation of grain sizes
-* grain size skewness: arithmetic skewness of grain size-distribution
-* grain size kurtosis: arithmetic kurtosis of grain-size distribution
-* percentiles: 5th, 10th, 16th, 25th, 50th, 75th, 84th, 90th, and 95th percentile of the cumulative grain size (% less than) particle size distribution
-* grain size frequencies: the normalised frequencies associated with 'grain size bins'
-* grain size bins: grain size values at which the distribution is evaluated
-
-
-:processing example on one image:
     python
-    import DGS-web
+    import DGS
 
     image_file = '/home/sed_images/my_image.png'
 
@@ -68,8 +40,7 @@ A dictionary objects containing the following key/value pairs:
     notes = 8 # notes per octave
     maxscale = 8 #Max scale as inverse fraction of data length
     verbose = 1 # print stuff to screen
-    dgs_stats = DGS-web.dgs_web(image_file, density, resolution, dofilter, maxscale, notes, verbose)
-
+    dgs_stats = DGS.dgs(image_file, density, resolution, dofilter, maxscale, notes, verbose)
 
  REQUIRED INPUTS:
  simply a single file path
@@ -92,6 +63,7 @@ A dictionary objects containing the following key/value pairs:
 * grain size frequencies: the normalised frequencies associated with 'grain size bins'
 * grain size bins: grain size values at which the distribution is evaluated
 
+
 PROCESSING NOTES:
 Note that the larger the density parameter, the longer the execution time. 
 
@@ -108,6 +80,7 @@ Note that the larger the density parameter, the longer the execution time.
     and does not imply endorsement by the U.S. government.
     
 """
+
 #-----------------------------------------------------------------------------
 # Imports
 #-----------------------------------------------------------------------------

@@ -4,7 +4,7 @@
            United States Geological Survey
            Flagstaff, AZ 86001
            dbuscombe@usgs.gov
- Revision Sept 7, 2015
+ Revision Mar 1, 2016
  First Revision January 18 2013
 
 For more information visit https://github.com/dbuscombe-usgs/DGS-python
@@ -42,7 +42,7 @@ def dotest_web():
    notes=8
    verbose=1
 
-   DGS.dgs_web(image, density, resolution, dofilter, maxscale, notes, verbose)
+   DGS.dgs(image, density, resolution, dofilter, maxscale, notes, verbose)
 
 if __name__ == '__main__':
    dotest()

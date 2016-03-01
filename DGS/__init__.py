@@ -15,40 +15,10 @@ http://dbuscombe-usgs.github.io/docs/Buscombe2013_Sedimentology_sed12049.pdf
            United States Geological Survey
            Flagstaff, AZ 86001
            dbuscombe@usgs.gov
- Revision Oct 13, 2015
+ Revision Mar 1, 2016
  First Revision January 18 2013   
 
 For more information visit https://github.com/dbuscombe-usgs/pyDGS
-
-:install:
-    python setup.py install
-    sudo python setup.py install
-    pip install pyDGS
-    
-:test:
-    python -c "import DGS; DGS.test.dotest()"
-
-    python
-    import DGS
-    density = 10 # process every 10 lines
-    res = 0.01 # mm/pixel
-    doplot = 0 # don't make plots
-    image_folder = '/home/sed_images'
-    DGS.dgs(image_folder,density,doplot,res)
-    image_file = '/home/sed_images/my_image.png'
-    mnsz, srt, sk, kurt, pd = DGS.dgs(image_file,density,doplot,res)
-    
- REQUIRED INPUTS:
- folder e.g. '/home/my_sediment_images'
- if 'pwd', then the present directory is analysed
- or simply a single file
-
- OPTIONAL INPUTS [default values]
- density = process every density lines of image [10]
- doplot = 0=no, 1=yes [0]
- resolution = spatial resolution of image in mm/pixel [1]
-
-Note that the larger the density parameter, the longer the execution time.
 
 :license:
     GNU Lesser General Public License, Version 3
@@ -64,13 +34,13 @@ Note that the larger the density parameter, the longer the execution time.
     
 """
 
-__version__ = '3.0.2'
+__version__ = '3.0.3'
 
 #-----------------------------------------------------------------------------
 # Imports
 #-----------------------------------------------------------------------------
 
-from DGS._dgs_class_web import dgs_web
+from DGS._dgs_class_web import dgs
 from DGS.test import *
 
 

@@ -15,7 +15,7 @@ http://dbuscombe-usgs.github.io/docs/Buscombe2013_Sedimentology_sed12049.pdf
            United States Geological Survey
            Flagstaff, AZ 86001
            dbuscombe@usgs.gov
- Revision Sept 7, 2015
+ Revision Mar 1, 2016
  First Revision January 18 2013   
 
 For more information visit https://github.com/dbuscombe-usgs/pyDGS
@@ -23,7 +23,7 @@ For more information visit https://github.com/dbuscombe-usgs/pyDGS
 :install:
     python setup.py install
     sudo python setup.py install
-    pip install pyDGS-web
+    pip install pyDGS
     
 :test:
     python -c "import DGS; DGS.test.dotest_web()"
@@ -39,7 +39,7 @@ For more information visit https://github.com/dbuscombe-usgs/pyDGS
     notes = 8 # notes per octave
     maxscale = 8 #Max scale as inverse fraction of data length
     verbose = 1 # print stuff to screen
-    dgs_stats = DGS.dgs_web(image_file, density, resolution, dofilter, maxscale, notes, verbose)
+    dgs_stats = DGS.dgs(image_file, density, resolution, dofilter, maxscale, notes, verbose)
 
  REQUIRED INPUTS:
  simply a single file path
@@ -82,9 +82,13 @@ Note that the larger the density parameter, the longer the execution time.
 
 import numpy as np
 import sys #, getopt, os, glob
-from PIL.Image import open as imopen
+#from PIL.Image import open as imopen
 import cwt
 import sgolay
+#from scipy.misc import imread as imopen
+from imread import imread
+
+from scipy.ndimage.interpolation import zoom
 
 # suppress divide and invalid warnings
 np.seterr(divide='ignore')
@@ -114,12 +118,42 @@ def rescale(dat,mn,mx):
 
 # =========================================================
 def get_me(useregion, maxscale, notes, density): #, mult):
-   dat = cwt.Cwt(np.asarray(useregion,'int8'), maxscale, notes, density) #, mult)
+   complete=0
+   while complete==0:
+      try:
+         dat = cwt.Cwt(np.asarray(useregion,'int8'), maxscale, notes, density) #, mult)
+         if 'dat' in locals(): 
+            complete=1
+      except:
+         density = density +1
+
    return dat.getvar(), (np.pi/2)*dat.getscales()
 
 # =========================================================
+def filter_me(region):
+
+   region = zoom(region, 0.5)
+
+   nx, ny = np.shape(region)
+   mn = min(nx,ny)
+
+   if isodd(mn/4):
+        window_size = (int(mn/4))
+   else:
+        window_size = (int(mn/4))-1
+
+   if iseven(window_size):
+      window_size = window_size+1
+
+   Zf = sgolay.sgolay2d( region, window_size, order=3).getdata()
+   # rescale filtered image to full 8-bit range
+   useregion = rescale(zoom(region-Zf[:nx,:ny],2),0,255)
+
+   return useregion
+
 # =========================================================
-def dgs_web(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbose=0):
+# =========================================================
+def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbose=0):
 
    if verbose==1:
       print "==========================================="
@@ -130,7 +164,7 @@ def dgs_web(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, ve
       print "==========================================="
       print "======A PROGRAM BY DANIEL BUSCOMBE========="
       print "========USGS, FLAGSTAFF, ARIZONA==========="
-      print "========REVISION 3.0.0, SEPT 2015=========="
+      print "========REVISION 3.0.3, MAR 2016==========="
       print "==========================================="
 
    # exit program if no input folder given
@@ -172,39 +206,47 @@ def dgs_web(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, ve
       print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
       print "Processing image %s" % (image)   
    try:
-       im = imopen(image).convert("L")
-   except IOError:
+       #im = imopen(image, flatten=1).astype('uint8')#.convert("L")
+       #im = imread.imload(image, as_grey=True).astype('uint8')
+       im = imread(image)[:,:,:3] # read image up to 3 layers
+       im = np.squeeze(im) # squeeze singleton dimensions
+       if len(np.shape(im))==3: # if rgb, convert to grey
+          im = (0.299 * im[:,:,0] + 0.5870*im[:,:,1] + 0.114*im[:,:,2]).astype('uint8')
+
+       nx,ny = np.shape(im)
+       if nx>ny:
+          im=im.T
+
+   except: # IOError:
        print 'cannot open', image
        sys.exit(2)
-    
+       #im = imread(image)
+
+       #nx,ny = np.shape(im)
+       #if nx>ny:
+       #   im=im.T
+
    # convert to numpy array
    region = np.array(im)
-   nx, ny = np.shape(region)
-   mn = min(nx,ny)
+   #nx, ny = np.shape(region)
+   #mn = min(nx,ny)
 
    # ======= stage 2 ==========================
    # if requested, call sgolay to filter image
    if dofilter==1:
-      if isodd(mn/4):
-           window_size = (int(mn/4))
-      else:
-           window_size = (int(mn/4))-1
-
-      if iseven(window_size):
-         window_size = window_size+1
-
-      Zf = sgolay.sgolay2d( region, window_size, order=3).getdata()
-
-      # rescale filtered image to full 8-bit range
-      useregion = rescale(region-Zf[:nx,:ny],0,255)
-      del Zf
+      useregion = filter_me(region) #, mn, nx, ny)
 
    else: #no filtering
       useregion = rescale(region,0,255)
 
    # ======= stage 3 ==========================
    # call cwt to get particle size distribution
+
+   while (np.shape(useregion)[0] / density) > 100:
+      density = density+1
+
    d, scales = get_me(useregion, maxscale, notes, density) #mult
+
    d = d/np.sum(d)
    d = d/(scales**0.5)
    d = d/np.sum(d)
@@ -228,6 +270,10 @@ def dgs_web(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, ve
    # get real scales by multiplying by resolution (mm/pixel)
    scales = scales*resolution
 
+   # area-by-number to volume-by-number
+   x = -0.5 # conversion constant
+   r_v = (d*scales**x) / np.sum(d*scales**x) #volume-by-weight proportion
+
    # ======= stage 5 ==========================
    # calc particle size stats
    mnsz = np.sum(d*scales)
@@ -250,12 +296,13 @@ def dgs_web(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, ve
 
    # ======= stage 6 ==========================
    # return a dict object of stats
-   return {'mean grain size': mnsz, 'grain size sorting': srt, 'grain size skewness': sk, 'grain size kurtosis': kurt, 'percentiles': pd, 'grain size frequencies': d, 'grain size bins': scales}
+   return {'mean grain size': mnsz, 'grain size sorting': srt, 'grain size skewness': sk, 'grain size kurtosis': kurt, 'percentiles': [.05,.1,.16,.25,.5,.75,.84,.9,.95], 'percentile_values': pd, 'grain size frequencies': d, 'grain size bins': scales}
 
 
 # =========================================================
 # =========================================================
 if __name__ == '__main__':
 
-   dgs_web(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbose=0)
+   dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbose=0)
+
 
