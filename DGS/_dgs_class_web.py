@@ -253,7 +253,7 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
 
    # ======= stage 4 ==========================
    # trim particle size bins
-   index = np.nonzero(scales<ny/3)
+   index = np.nonzero(scales<ny/4)
    scales = scales[index]
    d = d[index]
    d = d/np.sum(d)
@@ -271,7 +271,7 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
    scales = scales*resolution
 
    # area-by-number to volume-by-number
-   x = -0.5 # conversion constant
+   x = -1 # conversion constant
    r_v = (d*scales**x) / np.sum(d*scales**x) #volume-by-weight proportion
 
    # ======= stage 5 ==========================

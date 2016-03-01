@@ -21,9 +21,7 @@ http://dbuscombe-usgs.github.io/docs/Buscombe2013_Sedimentology_sed12049.pdf
     python -c "import DGS; DGS.test.dotest()"
 
  REQUIRED INPUTS:
- folder e.g. '/home/my_sediment_images'
- if 'pwd', then the present directory is analysed
- or simply a single file
+ image name e.g. '/home/sed_images/my_image.png'
  
  OPTIONAL INPUTS [default values][range of acceptable values]
  density = process every density lines of image [10][1 - 100]
