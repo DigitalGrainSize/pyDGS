@@ -85,8 +85,10 @@ import sys #, getopt, os, glob
 #from PIL.Image import open as imopen
 import cwt
 import sgolay
-#from scipy.misc import imread as imopen
-from imread import imread
+try:
+   from imread import imread
+except
+   from scipy.misc import imread
 
 from scipy.ndimage.interpolation import zoom
 
