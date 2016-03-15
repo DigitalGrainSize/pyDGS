@@ -88,7 +88,7 @@ import cwt
 import sgolay
 try:
    from imread import imread
-except
+except:
    from scipy.misc import imread
 
 from scipy.ndimage.interpolation import zoom
