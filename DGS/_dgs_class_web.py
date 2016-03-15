@@ -51,6 +51,7 @@ For more information visit https://github.com/dbuscombe-usgs/pyDGS
  notes = notes per octave to consider in continuous wavelet transform [8][1 - 8]
  maxscale = maximum scale (pixels) as an inverse function of data (image row) length [8][2 - 40]
  verbose = if 1, print stuff to screen [0][0 or 1]
+ x = area-by-number to volume-by-number conversion [-1] [-1 - 0]
 
 OUTPUT:
 A dictionary objects containing the following key/value pairs:
@@ -155,7 +156,7 @@ def filter_me(region):
 
 # =========================================================
 # =========================================================
-def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbose=0):
+def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbose=0, x=-1):
 
    if verbose==1:
       print "==========================================="
@@ -166,7 +167,7 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
       print "==========================================="
       print "======A PROGRAM BY DANIEL BUSCOMBE========="
       print "========USGS, FLAGSTAFF, ARIZONA==========="
-      print "========REVISION 3.0.3, MAR 2016==========="
+      print "========REVISION 3.0.4, MAR 2016==========="
       print "==========================================="
 
    # exit program if no input folder given
@@ -201,6 +202,9 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
       notes = np.asarray(notes,int)
       print 'Analysis of %s sub-octaves per octave' % (str(notes))
 
+   if x:
+      x = np.asarray(x, float)
+      print 'Area to volume conversion constant'
 
    # ======= stage 1 ==========================
    # read image
@@ -255,7 +259,7 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
 
    # ======= stage 4 ==========================
    # trim particle size bins
-   index = np.nonzero(scales<ny/4)
+   index = np.nonzero(scales<ny/maxscale)
    scales = scales[index]
    d = d[index]
    d = d/np.sum(d)
@@ -273,7 +277,6 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
    scales = scales*resolution
 
    # area-by-number to volume-by-number
-   x = -1 # conversion constant
    r_v = (d*scales**x) / np.sum(d*scales**x) #volume-by-weight proportion
 
    # ======= stage 5 ==========================
@@ -305,6 +308,6 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
 # =========================================================
 if __name__ == '__main__':
 
-   dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbose=0)
+   dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbose=0, x=-1)
 
 
