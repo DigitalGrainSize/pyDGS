@@ -170,14 +170,14 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
       print "========REVISION 3.0.4, MAR 2016==========="
       print "==========================================="
 
-   ## exit program if no input folder given
-   #if not image:
-   #   print 'An image file is required!!!!!!'
-   #   sys.exit(2)
+   # exit program if no input folder given
+   if not image:
+      print 'An image file is required!!!!!!'
+      sys.exit(2)
 
-   ## print given arguments to screen and convert data type where necessary
-   #if image:
-   #   print 'Input image is ', image
+   # print given arguments to screen and convert data type where necessary
+   if image:
+      print 'Input image is ', image
 
    if density:
       density = np.asarray(density,int)
@@ -202,15 +202,15 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
       notes = np.asarray(notes,int)
       print 'Analysis of %s sub-octaves per octave' % (str(notes))
 
-#   if x:
-#      x = np.asarray(x, float)
-#      print 'Area to volume conversion constant = ' % (str(x))
+   if x:
+      x = np.asarray(x, float)
+      print 'Area to volume conversion constant = ' % (str(x))
 
    # ======= stage 1 ==========================
    # read image
    if verbose==1:
       print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-      print "Processing image" # %s" % (image)   
+      print "Processing image %s" % (image)   
    try:
        #im = imopen(image, flatten=1).astype('uint8')#.convert("L")
        #im = imread.imload(image, as_grey=True).astype('uint8')
@@ -224,15 +224,6 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
           im=im.T
 
    except: # IOError:
-       im = image[:,:,:3] # read image up to 3 layers
-       im = np.squeeze(im) # squeeze singleton dimensions
-       if len(np.shape(im))==3: # if rgb, convert to grey
-          im = (0.299 * im[:,:,0] + 0.5870*im[:,:,1] + 0.114*im[:,:,2]).astype('uint8')
-
-       nx,ny = np.shape(im)
-       if nx>ny:
-          im=im.T
-   finally:
        print 'cannot open', image
        sys.exit(2)
        #im = imread(image)
