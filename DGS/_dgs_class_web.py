@@ -170,14 +170,14 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
       print "========REVISION 3.0.4, MAR 2016==========="
       print "==========================================="
 
-   # exit program if no input folder given
-   if not image:
-      print 'An image file is required!!!!!!'
-      sys.exit(2)
+   ## exit program if no input folder given
+   #if not image:
+   #   print 'An image file is required!!!!!!'
+   #   sys.exit(2)
 
-   # print given arguments to screen and convert data type where necessary
-   if image:
-      print 'Input image is ', image
+   ## print given arguments to screen and convert data type where necessary
+   #if image:
+   #   print 'Input image is ', image
 
    if density:
       density = np.asarray(density,int)
