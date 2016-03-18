@@ -204,7 +204,7 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
 
    if x:
       x = np.asarray(x, float)
-      print 'Area to volume conversion constant'
+      print 'Area to volume conversion constant = ' % (str(x))
 
    # ======= stage 1 ==========================
    # read image
@@ -224,6 +224,15 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
           im=im.T
 
    except: # IOError:
+       im = image[:,:,:3] # read image up to 3 layers
+       im = np.squeeze(im) # squeeze singleton dimensions
+       if len(np.shape(im))==3: # if rgb, convert to grey
+          im = (0.299 * im[:,:,0] + 0.5870*im[:,:,1] + 0.114*im[:,:,2]).astype('uint8')
+
+       nx,ny = np.shape(im)
+       if nx>ny:
+          im=im.T
+   finally:
        print 'cannot open', image
        sys.exit(2)
        #im = imread(image)
