@@ -202,15 +202,15 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
       notes = np.asarray(notes,int)
       print 'Analysis of %s sub-octaves per octave' % (str(notes))
 
-   if x:
-      x = np.asarray(x, float)
-      print 'Area to volume conversion constant = ' % (str(x))
+#   if x:
+#      x = np.asarray(x, float)
+#      print 'Area to volume conversion constant = ' % (str(x))
 
    # ======= stage 1 ==========================
    # read image
    if verbose==1:
       print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-      print "Processing image %s" % (image)   
+      print "Processing image" # %s" % (image)   
    try:
        #im = imopen(image, flatten=1).astype('uint8')#.convert("L")
        #im = imread.imload(image, as_grey=True).astype('uint8')
