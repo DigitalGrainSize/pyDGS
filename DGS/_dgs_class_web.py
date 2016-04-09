@@ -160,58 +160,58 @@ def filter_me(region):
 def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbose=0, x=-1):
 
    if verbose==1:
-      print "==========================================="
-      print "======DIGITAL GRAIN SIZE: WAVELET=========="
-      print "==========================================="
-      print "=CALCULATE GRAIN SIZE-DISTRIBUTION FROM AN="
-      print "====IMAGE OF SEDIMENT/GRANULAR MATERIAL===="
-      print "==========================================="
-      print "======A PROGRAM BY DANIEL BUSCOMBE========="
-      print "========USGS, FLAGSTAFF, ARIZONA==========="
-      print "========REVISION 3.0.4, MAR 2016==========="
-      print "==========================================="
+      print("===========================================")
+      print("======DIGITAL GRAIN SIZE: WAVELET==========")
+      print("===========================================")
+      print("=CALCULATE GRAIN SIZE-DISTRIBUTION FROM AN=")
+      print("====IMAGE OF SEDIMENT/GRANULAR MATERIAL====")
+      print("===========================================")
+      print("======A PROGRAM BY DANIEL BUSCOMBE=========")
+      print("========USGS, FLAGSTAFF, ARIZONA===========")
+      print("========REVISION 3.0.4, MAR 2016===========")
+      print("===========================================")
 
    # exit program if no input folder given
    if not image:
-      print 'An image file is required!!!!!!'
+      print('An image file is required!!!!!!')
       sys.exit(2)
 
    # print given arguments to screen and convert data type where necessary
    if image:
-      print 'Input image is ', image
+      print('Input image is '+image)
 
    if density:
       density = np.asarray(density,int)
-      print 'Every %s rows will be processed' % (str(density))
+      print('Every '+str(density)+' rows will be processed')
 
    if resolution:
       resolution = np.asarray(resolution,float)
-      print 'Resolution is ', str(resolution)
+      print('Resolution is '+str(resolution))
 
    if dofilter:
       dofilter = np.asarray(dofilter,int)
       if dofilter==1:
-         print 'Image will be filtered'
+         print('Image will be filtered')
       else:
-         print 'Image will not be filtered'
+         print('Image will not be filtered')
 
    if maxscale:
       maxscale = np.asarray(maxscale,int)
-      print 'Max scale as inverse fraction of data length: %s' % (str(maxscale))
+      print('Max scale as inverse fraction of data length: '+str(maxscale))
 
    if notes:
       notes = np.asarray(notes,int)
-      print 'Analysis of %s sub-octaves per octave' % (str(notes))
+      print('Analysis of %s sub-octaves per octave: '+str(notes))
 
    if x:
       x = np.asarray(x, float)
-      print 'Area to volume conversion constant = ' % (str(x))
+      print('Area to volume conversion constant = '+str(x))
 
    # ======= stage 1 ==========================
    # read image
    if verbose==1:
-      print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-      print "Processing image %s" % (image)   
+      print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+      print('Processing image '+image)   
    try:
        #im = imopen(image, flatten=1).astype('uint8')#.convert("L")
        #im = imread.imload(image, as_grey=True).astype('uint8')
@@ -225,7 +225,7 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
           im=im.T
 
    except: # IOError:
-       print 'cannot open', image
+       print('cannot open '+image)
        sys.exit(2)
        #im = imread(image)
 
@@ -284,19 +284,19 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
    # calc particle size stats
    mnsz = np.sum(d*scales)
    if verbose==1:
-      print "mean size = ", mnsz 
+      print("mean size = "+mnsz) 
 
    srt = np.sqrt(np.sum(d*((scales-mnsz)**2)))
    if verbose==1:
-      print "stdev = ",srt 
+      print("stdev = "+srt)
 
    sk = (sum(d*((scales-mnsz)**3)))/(100*srt**3)
    if verbose==1:
-      print "skewness = ",sk
+      print("skewness = "+sk)
 
    kurt = (sum(d*((scales-mnsz)**4)))/(100*srt**4)
    if verbose==1:
-      print "kurtosis = ",kurt
+      print("kurtosis = "+kurt)
 
    pd = np.interp([.05,.1,.16,.25,.5,.75,.84,.9,.95],np.hstack((0,np.cumsum(d))), np.hstack((0,scales)) )
 
