@@ -81,6 +81,7 @@ Note that the larger the density parameter, the longer the execution time.
     
 """
 
+from __future__ import print_function
 import numpy as np
 import sys #, getopt, os, glob
 #from PIL.Image import open as imopen
