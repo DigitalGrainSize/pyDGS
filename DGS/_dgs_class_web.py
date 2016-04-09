@@ -284,19 +284,19 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
    # calc particle size stats
    mnsz = np.sum(d*scales)
    if verbose==1:
-      print("mean size = "+mnsz) 
+      print("mean size = "+str(mnsz)) 
 
    srt = np.sqrt(np.sum(d*((scales-mnsz)**2)))
    if verbose==1:
-      print("stdev = "+srt)
+      print("stdev = "+str(srt))
 
    sk = (sum(d*((scales-mnsz)**3)))/(100*srt**3)
    if verbose==1:
-      print("skewness = "+sk)
+      print("skewness = "+str(sk))
 
    kurt = (sum(d*((scales-mnsz)**4)))/(100*srt**4)
    if verbose==1:
-      print("kurtosis = "+kurt)
+      print("kurtosis = "+str(kurt))
 
    pd = np.interp([.05,.1,.16,.25,.5,.75,.84,.9,.95],np.hstack((0,np.cumsum(d))), np.hstack((0,scales)) )
 
