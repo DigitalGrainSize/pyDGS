@@ -260,7 +260,7 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
 
    # ======= stage 4 ==========================
    # trim particle size bins
-   index = np.nonzero(scales<ny/maxscale)
+   index = np.nonzero(scales<4*ny/maxscale)
    scales = scales[index]
    d = d[index]
    d = d/np.sum(d)
