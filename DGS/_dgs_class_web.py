@@ -249,8 +249,8 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
    # ======= stage 3 ==========================
    # call cwt to get particle size distribution
 
-   while (np.shape(useregion)[0] / density) > 100:
-      density = density+1
+   #while (np.shape(useregion)[0] / density) > 100:
+   #   density = density+1
 
    d, scales = get_me(useregion, maxscale, notes, density) #mult
 
@@ -302,7 +302,7 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
 
    # ======= stage 6 ==========================
    # return a dict object of stats
-   return {'mean grain size': mnsz, 'grain size sorting': srt, 'grain size skewness': sk, 'grain size kurtosis': kurt, 'percentiles': [.05,.1,.16,.25,.5,.75,.84,.9,.95], 'percentile_values': pd, 'grain size frequencies': d, 'grain size bins': scales}
+   return {'mean grain size': mnsz, 'grain size sorting': srt, 'grain size skewness': sk, 'grain size kurtosis': kurt, 'percentiles': [.05,.1,.16,.25,.5,.75,.84,.9,.95], 'percentile_values': pd, 'grain size frequencies': r_v, 'grain size bins': scales}
 
 
 # =========================================================
