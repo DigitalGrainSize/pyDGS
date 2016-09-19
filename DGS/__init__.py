@@ -34,7 +34,7 @@ For more information visit https://github.com/dbuscombe-usgs/pyDGS
     
 """
 
-__version__ = '3.0.6'
+__version__ = '3.0.7'
 
 #-----------------------------------------------------------------------------
 # Imports
