@@ -131,15 +131,20 @@ cdef class Cwt:
     @cython.nonecheck(False)
     cpdef int _setscales(self, int ndata, int largestscale, int notes):
         """
-        returns a log scale based on notes per ocave
+        returns a log scale based on notes per octave
         """
         #cdef float pi = 3.14159265
-        cdef int noctave = self._log2( ndata/largestscale/2 )
-        self.nscale = notes*noctave
-        cdef np.ndarray[np.float64_t, ndim=1] scales = np.empty(self.nscale,np.float64)
+        #cdef int noctave = self._log2( ndata/largestscale/2 )
+        #self.nscale = notes*noctave
+        #cdef np.ndarray[np.float64_t, ndim=1] scales = np.empty(self.nscale,np.float64)
+        #self.scales = scales
+        #for j from 0 <= j < self.nscale:
+        #     self.scales[j] = ndata/(self.scale*(2.0**(self.nscale-1-j)/notes))
+        # linear scaling
+        cdef float nmax = ndata / largestscale / 2.0
+        cdef np.ndarray [np.float64_t, ndim = 1] scales = np.arange(float(2),float(nmax))
         self.scales = scales
-        for j from 0 <= j < self.nscale:
-             self.scales[j] = ndata/(self.scale*(2.0**(self.nscale-1-j)/notes))
+        self.nscale = len (self.scales)
         return 0
         
     # =========================================================
