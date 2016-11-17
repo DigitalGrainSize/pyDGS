@@ -258,9 +258,11 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
    #while (np.shape(useregion)[0] / density) > 100:
    #   density = density+1
    
-   # check the supplied scales before supplying to the cwt
-   if not input_scales is None:
-       scales_px = input_scales / resolution                  # convert to pixels
+   # change the supplied scales to pixels prior to passing to cwt
+   if input_scales is None:
+       scales_px = np.array ([0.0])                     # make an array of length 1 to pass to cwt
+   else:
+       scales_px = input_scales / resolution            # convert to pixels
        scales_mask = scales_px <= maxscale              # mask the scales to those less than maxscale
        scales_px = scales_px[scales_mask]               # mask the array     
 

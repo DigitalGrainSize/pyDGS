@@ -55,7 +55,7 @@ cdef class Cwt:
     @cython.wraparound(False)
     @cython.nonecheck(False)
     def __cinit__(self, np.ndarray[np.int8_t, ndim=2] matrix, int largestscale, int notes, int density, 
-                  np.ndarray[np.float64, ndim=1] scales): #, float mult):
+                  np.ndarray[np.float64_t, ndim=1] scales): #, float mult):
         """
         Continuous Morlet wavelet transform of data
 
@@ -65,7 +65,8 @@ cdef class Cwt:
                  of data array
                  scale = len(data)/largestscale
                  smallest scale should be >= 2 for meaningful data
-        scales: numpy array of scales in pixels to measure against (can be None)
+        scales: numpy array of scales in pixels to measure against. If supplied with length
+                of 1, this triggers the code to automatically make the scales.
         """
         self.win = np.shape(matrix)[0]
         self.density = density
@@ -88,8 +89,8 @@ cdef class Cwt:
         cdef int ndata = int(2**(base2+1)) #len(data)
         cdef int tmp = 0
         
-        # assign the scales automatically if the scales argument is None
-        if scales is None:
+        # assign the scales automatically if the scales argument has only length 1
+        if len (scales) == 1:
             self.nscale = tmp
             self.scale = largestscale
             self._setscales(ndata,largestscale,notes)
