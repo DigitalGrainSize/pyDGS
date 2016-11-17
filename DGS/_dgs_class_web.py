@@ -263,8 +263,6 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
        scales_px = np.array ([0.0])                     # make an array of length 1 to pass to cwt
    else:
        scales_px = input_scales / resolution            # convert to pixels
-       scales_mask = scales_px <= maxscale              # mask the scales to those less than maxscale
-       scales_px = scales_px[scales_mask]               # mask the array     
 
    d, scales = get_me(useregion, maxscale, notes, density, scales_px) #mult
 
@@ -274,16 +272,19 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
 
    # ======= stage 4 ==========================
    # trim particle size bins
-   index = np.nonzero(scales<4*ny/maxscale)
-   scales = scales[index]
-   d = d[index]
+   upper_trim = scales > (4*ny/maxscale)
+   lower_trim = scales < (np.pi * 2.0)
+   trim = upper_trim + lower_trim
+   
+   # if we have pre-supplied scales, change the densities to 0.0, else cut the arrays
+   if not input_scales is None:
+       d[trim] = 0.0
+   else:
+       d = d[~trim]
+       scales = scales[~trim]
+       
    d = d/np.sum(d)
 
-   index = np.nonzero(scales>np.pi*2)
-   scales = scales[index]
-   d = d[index]
-   d = d/np.sum(d)
-     
    n = np.r_[0:len(scales)]-(len(scales)-1)/2
    d = d*np.exp(-(0.5)*((np.pi/2)*n/((len(scales)-1)/2))**2)
    d = d/np.sum(d)   
