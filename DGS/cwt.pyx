@@ -23,6 +23,7 @@ For more information visit https://github.com/dbuscombe-usgs/DGS-python
 
 from __future__ import division
 import numpy as np
+from pandas.tools.rplot import ScaleShape
 cimport numpy as np
 cimport cython
 from libc.math cimport sqrt,log,abs
@@ -53,7 +54,8 @@ cdef class Cwt:
     @cython.cdivision(True)
     @cython.wraparound(False)
     @cython.nonecheck(False)
-    def __cinit__(self, np.ndarray[np.int8_t, ndim=2] matrix, int largestscale, int notes, int density): #, float mult):
+    def __cinit__(self, np.ndarray[np.int8_t, ndim=2] matrix, int largestscale, int notes, int density, 
+                  np.ndarray[np.float64, ndim=1] scales): #, float mult):
         """
         Continuous Morlet wavelet transform of data
 
@@ -63,6 +65,7 @@ cdef class Cwt:
                  of data array
                  scale = len(data)/largestscale
                  smallest scale should be >= 2 for meaningful data
+        scales: numpy array of scales in pixels to measure against (can be None)
         """
         self.win = np.shape(matrix)[0]
         self.density = density
@@ -84,9 +87,17 @@ cdef class Cwt:
                    
         cdef int ndata = int(2**(base2+1)) #len(data)
         cdef int tmp = 0
-        self.nscale = tmp
-        self.scale = largestscale
-        self._setscales(ndata,largestscale,notes)
+        
+        # assign the scales automatically if the scales argument is None
+        if scales is None:
+            self.nscale = tmp
+            self.scale = largestscale
+            self._setscales(ndata,largestscale,notes)
+        # else, use the pre-supplied scales
+        else:
+            self.scales = scales
+            self.nscale = len (scales)
+        
         cdef np.ndarray[np.complex64_t, ndim=3] cwt = np.zeros((self.nscale,ndata,len(self.r)),dtype=np.complex64)
         self.cwt = cwt
         cdef np.ndarray[np.float64_t, ndim=1] omega = np.empty(ndata, dtype=np.float64)
@@ -134,17 +145,18 @@ cdef class Cwt:
         returns a log scale based on notes per octave
         """
         #cdef float pi = 3.14159265
-        #cdef int noctave = self._log2( ndata/largestscale/2 )
-        #self.nscale = notes*noctave
-        #cdef np.ndarray[np.float64_t, ndim=1] scales = np.empty(self.nscale,np.float64)
-        #self.scales = scales
-        #for j from 0 <= j < self.nscale:
-        #     self.scales[j] = ndata/(self.scale*(2.0**(self.nscale-1-j)/notes))
-        # linear scaling
-        cdef float nmax = ndata / largestscale / 2.0
-        cdef np.ndarray [np.float64_t, ndim = 1] scales = np.arange(float(2),float(nmax))
+        cdef int noctave = self._log2( ndata/largestscale/2 )
+        self.nscale = notes*noctave
+        cdef np.ndarray[np.float64_t, ndim=1] scales = np.empty(self.nscale,np.float64)
         self.scales = scales
-        self.nscale = len (self.scales)
+        for j from 0 <= j < self.nscale:
+             self.scales[j] = ndata/(self.scale*(2.0**(self.nscale-1-j)/notes))
+        
+        # linear scaling
+        #cdef float nmax = ndata / largestscale / 2.0
+        #cdef np.ndarray [np.float64_t, ndim = 1] scales = np.arange(float(2),float(nmax))
+        #self.scales = scales
+        #self.nscale = len (self.scales)
         return 0
         
     # =========================================================

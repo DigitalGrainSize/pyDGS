@@ -52,6 +52,7 @@ For more information visit https://github.com/dbuscombe-usgs/pyDGS
  maxscale = maximum scale (pixels) as an inverse function of data (image row) length [8][2 - 40]
  verbose = if 1, print stuff to screen [0][0 or 1]
  x = area-by-number to volume-by-number conversion [-1] [-1 - 0]
+ scales = optional numpy array of scales to analyse in mm
 
 OUTPUT:
 A dictionary objects containing the following key/value pairs:
@@ -121,11 +122,11 @@ def rescale(dat,mn,mx):
     return (mx-mn)*(dat-m)/(M-m)+mn
 
 # =========================================================
-def get_me(useregion, maxscale, notes, density): #, mult):
+def get_me(useregion, maxscale, notes, density, scales): #, mult):
    complete=0
    while complete==0:
       try:
-         dat = cwt.Cwt(np.asarray(useregion,'int8'), maxscale, notes, density) #, mult)
+         dat = cwt.Cwt(np.asarray(useregion,'int8'), maxscale, notes, density, scales) #, mult)
          if 'dat' in locals(): 
             complete=1
       except:
@@ -157,7 +158,7 @@ def filter_me(region):
 
 # =========================================================
 # =========================================================
-def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbose=0, x=-1):
+def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbose=0, x=-1, scales = None):
 
    if verbose==1:
       print("===========================================")
@@ -206,6 +207,11 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
    if x:
       x = np.asarray(x, float)
       print('Area to volume conversion constant = '+str(x))
+      
+   if not input_scales is None:
+      input_scales = np.asarray(input_scales, float)
+      input_scales = input_scales[input_scales > 0.0]                 # ensure we have nothing less than 0 mm
+      print('Using supplied scales array')
 
    # ======= stage 1 ==========================
    # read image
@@ -251,8 +257,14 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
 
    #while (np.shape(useregion)[0] / density) > 100:
    #   density = density+1
+   
+   # check the supplied scales before supplying to the cwt
+   if not input_scales is None:
+       scales_px = input_scales / resolution                  # convert to pixels
+       scales_mask = scales_px <= maxscale              # mask the scales to those less than maxscale
+       scales_px = scales_px[scales_mask]               # mask the array     
 
-   d, scales = get_me(useregion, maxscale, notes, density) #mult
+   d, scales = get_me(useregion, maxscale, notes, density, scales_px) #mult
 
    d = d/np.sum(d)
    d = d/(scales**0.5)
