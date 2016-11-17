@@ -126,6 +126,7 @@ def get_me(useregion, maxscale, notes, density, scales): #, mult):
    complete=0
    while complete==0:
       try:
+         scales = scales / (np.pi/2)    # convert scales with pi / 2 multiplier
          dat = cwt.Cwt(np.asarray(useregion,'int8'), maxscale, notes, density, scales) #, mult)
          if 'dat' in locals(): 
             complete=1
@@ -158,7 +159,7 @@ def filter_me(region):
 
 # =========================================================
 # =========================================================
-def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbose=0, x=-1, scales = None):
+def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbose=0, x=-1, scales=None):
 
    if verbose==1:
       print("===========================================")
@@ -208,9 +209,10 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
       x = np.asarray(x, float)
       print('Area to volume conversion constant = '+str(x))
       
+   input_scales = scales                                # different variable name for transparency
    if not input_scales is None:
-      input_scales = np.asarray(input_scales, float)
-      input_scales = input_scales[input_scales > 0.0]                 # ensure we have nothing less than 0 mm
+      input_scales = np.asarray(scales, float)          # make sure it is a numpy float array
+      input_scales = input_scales[input_scales > 0.0]   # ensure we have nothing less than 0 mm
       print('Using supplied scales array')
 
    # ======= stage 1 ==========================
