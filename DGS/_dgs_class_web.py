@@ -52,6 +52,7 @@ For more information visit https://github.com/dbuscombe-usgs/pyDGS
  maxscale = maximum scale (pixels) as an inverse function of data (image row) length [8][2 - 40]
  verbose = if 1, print stuff to screen [0][0 or 1]
  x = area-by-number to volume-by-number conversion [-1] [-1 - 0]
+ minscale = the minimum scale to be reported in pixels [pi*2.0][>0]
  scales = optional numpy array of scales to analyse in mm
 
 OUTPUT:
@@ -159,7 +160,8 @@ def filter_me(region):
 
 # =========================================================
 # =========================================================
-def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbose=0, x=-1, scales=None):
+def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbose=0, x=-1,
+        minscale=np.pi*2.0, scales=None):
 
    if verbose==1:
       print("===========================================")
@@ -208,6 +210,10 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
    if x:
       x = np.asarray(x, float)
       print('Area to volume conversion constant = '+str(x))
+    
+   if minscale:
+      minscale = np.asarray(minscale,float)
+      print('Minimum scale reported in pixels = ' + str(minscale))  
       
    input_scales = scales                                # different variable name for transparency
    if not input_scales is None:
@@ -275,7 +281,7 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
    # ======= stage 4 ==========================
    # trim particle size bins
    upper_trim = scales > (4*ny/maxscale)
-   lower_trim = scales < (np.pi * 2.0)
+   lower_trim = scales < minscale           # trim the minimum scale off the gsd
    trim = upper_trim + lower_trim
    
    # if we have pre-supplied scales, change the densities to 0.0, else cut the arrays
