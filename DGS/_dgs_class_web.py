@@ -215,8 +215,11 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
    try:
        #im = imopen(image, flatten=1).astype('uint8')#.convert("L")
        #im = imread.imload(image, as_grey=True).astype('uint8')
-       im = imread(image)[:,:,:3] # read image up to 3 layers
-       im = np.squeeze(im) # squeeze singleton dimensions
+       im = imread(image)   # read the image straight with imread
+       im = np.squeeze(im)  # squeeze singleton dimensions
+       if len(np.shape(im))>3:
+           im = im[:, :, :3]            # only keep the first 3 bands
+       
        if len(np.shape(im))==3: # if rgb, convert to grey
           im = (0.299 * im[:,:,0] + 0.5870*im[:,:,1] + 0.114*im[:,:,2]).astype('uint8')
 
