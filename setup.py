@@ -9,17 +9,18 @@ This program implements the algorithm of:
 
 Buscombe, D. (2013) Transferable Wavelet Method for Grain-Size Distribution from Images of Sediment Surfaces and Thin Sections, and Other Natural Granular Patterns. Sedimentology 60, 1709-1732
 
-http://dbuscombe-usgs.github.io/docs/Buscombe2013_Sedimentology_sed12049.pdf
+https://www.danielbuscombe.com/s/Buscombe_2013_sedimentology_101111-sed12049.pdf
 
  Author:  Daniel Buscombe
-           Grand Canyon Monitoring and Research Center
-           United States Geological Survey
+           Northern Arizona University
            Flagstaff, AZ 86001
-           dbuscombe@usgs.gov
- Revision Mar 1, 2016
- First Revision January 18 2013   
+           daniel.buscombe@nau.edu
+ Revision Dec 21, 2017
+ First Revision January 18 2013
 
 For more information visit https://github.com/dbuscombe-usgs/pyDGS
+
+https://www.danielbuscombe.com/s/Buscombe_2013_sedimentology_101111-sed12049.pdf
 
 :install:
     python setup.py install

@@ -1,11 +1,17 @@
 """
  Author:  Daniel Buscombe
-           Grand Canyon Monitoring and Research Center
-           United States Geological Survey
+           Northern Arizona University
            Flagstaff, AZ 86001
-           dbuscombe@usgs.gov
- Revision Mar 1, 2016
+           daniel.buscombe@nau.edu
+ Revision Dec 21, 2017
  First Revision January 18 2013
+
+For more information visit https://github.com/dbuscombe-usgs/pyDGS
+
+https://www.danielbuscombe.com/s/Buscombe_2013_sedimentology_101111-sed12049.pdf
+
+Please contact:
+daniel.buscombe@nau.edu
 
 For more information visit https://github.com/dbuscombe-usgs/DGS-python
 
@@ -41,8 +47,9 @@ def dotest_web():
    maxscale=8
    notes=8
    verbose=1
+   x = -0.5
 
-   DGS.dgs(image, density, resolution, dofilter, maxscale, notes, verbose)
+   DGS.dgs(image, density, resolution, dofilter, maxscale, notes, verbose, x)
 
 if __name__ == '__main__':
    dotest()

@@ -10,7 +10,10 @@ This program implements the algorithm of:
 
 Buscombe, D. (2013) Transferable Wavelet Method for Grain-Size Distribution from Images of Sediment Surfaces and Thin Sections, and Other Natural Granular Patterns. Sedimentology 60, 1709-1732
 
-http://dbuscombe-usgs.github.io/docs/Buscombe2013_Sedimentology_sed12049.pdf
+https://www.danielbuscombe.com/s/Buscombe_2013_sedimentology_101111-sed12049.pdf
+
+See also the web implementation
+www.digitalgrainsize.org
 
 ### install:
     python setup.py install
@@ -24,12 +27,13 @@ http://dbuscombe-usgs.github.io/docs/Buscombe2013_Sedimentology_sed12049.pdf
  image name e.g. '/home/sed_images/my_image.png'
  
  OPTIONAL INPUTS [default values][range of acceptable values]
- density = process every density lines of image [10][1 - 100]
+ density = process every *density* lines of image [10][1 - 100]
  resolution = spatial resolution of image in mm/pixel [1][>0]
  dofilter = spatial resolution of image in mm/pixel [1][0 or 1]
  notes = notes per octave to consider in continuous wavelet transform [8][1 - 8]
  maxscale = maximum scale (pixels) as an inverse function of data (image row) length [8][2 - 40]
- doplot = 0=no, 1=yes [0][0 or 1]
+ verbose = if 1, print stuff to screen [0][0 or 1]
+ x = area-by-number to volume-by-number conversion [0] [-1 - 1]
 
 OUTPUT FOR A SINGLE IMAGE FILE:
 A dictionary objects containing the following key/value pairs:
@@ -54,7 +58,8 @@ A dictionary objects containing the following key/value pairs:
     notes = 8 # notes per octave
     maxscale = 8 #Max scale as inverse fraction of data length
     verbose = 1 # print stuff to screen
-    dgs_stats = DGS.dgs(image_file, density, resolution, dofilter, maxscale, notes, verbose)
+    x=-0.5
+    dgs_stats = DGS.dgs(image_file, density, resolution, dofilter, maxscale, notes, verbose, x)
 
  REQUIRED INPUTS:
  simply a single file path
@@ -66,6 +71,8 @@ A dictionary objects containing the following key/value pairs:
  notes = notes per octave to consider in continuous wavelet transform [8][1 - 8]
  maxscale = maximum scale (pixels) as an inverse function of data (image row) length [8][2 - 40]
  verbose = if 1, print stuff to screen [0][0 or 1]
+ x = area-by-number to volume-by-number conversion [0] [-1 - 1]
+
 
 OUTPUT:
 A dictionary objects containing the following key/value pairs:
@@ -108,24 +115,25 @@ This program implements the algorithm of
 Buscombe, D. (2013) Transferable Wavelet Method for Grain-Size Distribution from Images of Sediment Surfaces and Thin Sections, and Other Natural Granular Patterns, Sedimentology 60, 1709 - 1732
 
  Author:  Daniel Buscombe
-           Grand Canyon Monitoring and Research Center
-           United States Geological Survey
+           Northern Arizona University
            Flagstaff, AZ 86001
-           dbuscombe@usgs.gov
- Revision Mar 1, 2015
+           daniel.buscombe@nau.edu
+ Revision Dec 21, 2017
  First Revision January 18 2013
 
 For more information visit https://github.com/dbuscombe-usgs/pyDGS
 
+https://www.danielbuscombe.com/s/Buscombe_2013_sedimentology_101111-sed12049.pdf
+
 Please contact:
-dbuscombe@usgs.gov
+daniel.buscombe@nau.edu
 
 to report bugs and discuss the code, algorithm, collaborations
 
 For the latest code version please visit:
 https://github.com/dbuscombe-usgs
 
-See also the project blog: 
-http://dbuscombe-usgs.github.com/
+See also the web implementation
+www.digitalgrainsize.org
 
 Please download, try, report bugs, fork, modify, evaluate, discuss. Thanks for stopping by!

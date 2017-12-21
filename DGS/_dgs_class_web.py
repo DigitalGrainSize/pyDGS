@@ -8,17 +8,16 @@ This program implements the algorithm of:
 
 Buscombe, D. (2013) Transferable Wavelet Method for Grain-Size Distribution from Images of Sediment Surfaces and Thin Sections, and Other Natural Granular Patterns. Sedimentology 60, 1709-1732
 
-http://dbuscombe-usgs.github.io/docs/Buscombe2013_Sedimentology_sed12049.pdf
-
  Author:  Daniel Buscombe
-           Grand Canyon Monitoring and Research Center
-           United States Geological Survey
+           Northern Arizona University
            Flagstaff, AZ 86001
-           dbuscombe@usgs.gov
- Revision Mar 1, 2016
- First Revision January 18 2013   
+           daniel.buscombe@nau.edu
+ Revision Dec 21, 2017
+ First Revision January 18 2013
 
 For more information visit https://github.com/dbuscombe-usgs/pyDGS
+
+https://www.danielbuscombe.com/s/Buscombe_2013_sedimentology_101111-sed12049.pdf
 
 :install:
     python setup.py install
@@ -39,7 +38,8 @@ For more information visit https://github.com/dbuscombe-usgs/pyDGS
     notes = 8 # notes per octave
     maxscale = 8 #Max scale as inverse fraction of data length
     verbose = 1 # print stuff to screen
-    dgs_stats = DGS.dgs(image_file, density, resolution, dofilter, maxscale, notes, verbose)
+    x = area-number to volume-number conversion (or empirical correction)
+    dgs_stats = DGS.dgs(image_file, density, resolution, dofilter, maxscale, notes, verbose, x)
 
  REQUIRED INPUTS:
  simply a single file path
@@ -51,7 +51,7 @@ For more information visit https://github.com/dbuscombe-usgs/pyDGS
  notes = notes per octave to consider in continuous wavelet transform [8][1 - 8]
  maxscale = maximum scale (pixels) as an inverse function of data (image row) length [8][2 - 40]
  verbose = if 1, print stuff to screen [0][0 or 1]
- x = area-by-number to volume-by-number conversion [-1] [-1 - 0]
+ x = area-by-number to volume-by-number conversion [0] [-1 - 1]
 
 OUTPUT:
 A dictionary objects containing the following key/value pairs:
@@ -157,7 +157,7 @@ def filter_me(region):
 
 # =========================================================
 # =========================================================
-def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbose=0, x=-1):
+def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbose=0, x=0):
 
    if verbose==1:
       print("===========================================")
@@ -168,7 +168,7 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
       print("===========================================")
       print("======A PROGRAM BY DANIEL BUSCOMBE=========")
       print("========USGS, FLAGSTAFF, ARIZONA===========")
-      print("========REVISION 3.0.4, MAR 2016===========")
+      print("========REVISION 3.0.5, DEC 2017===========")
       print("===========================================")
 
    # exit program if no input folder given
@@ -282,7 +282,7 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
 
    # ======= stage 5 ==========================
    # calc particle size stats
-   mnsz = np.sum(d*scales)
+   mnsz = np.sum(r_v*scales)
    if verbose==1:
       print("mean size = "+str(mnsz)) 
 
@@ -309,6 +309,6 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
 # =========================================================
 if __name__ == '__main__':
 
-   dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbose=0, x=-1)
+   dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbose=0, x=0)
 
 
