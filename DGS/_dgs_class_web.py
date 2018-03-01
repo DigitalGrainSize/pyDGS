@@ -85,8 +85,14 @@ from __future__ import print_function
 import numpy as np
 import sys #, getopt, os, glob
 #from PIL.Image import open as imopen
-import cwt
-import sgolay
+
+if sys.version_info >= (3, 0):
+   from . import cwt
+   from . import sgolay
+else:
+   import cwt
+   import sgolay
+
 try:
    from imread import imread
 except:
