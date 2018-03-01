@@ -90,7 +90,7 @@ cdef class Cwt:
         cdef np.ndarray[np.complex64_t, ndim=3] cwt = np.zeros((self.nscale,ndata,len(self.r)),dtype=np.complex64)
         self.cwt = cwt
         cdef np.ndarray[np.float64_t, ndim=1] omega = np.empty(ndata, dtype=np.float64)
-        omega = np.array(range(0,np.int(ndata/2))+range(-np.int(ndata/2),0))*(2.0*pi/ndata)
+        omega = np.array(np.arange(0,np.int(ndata/2))+np.arange(-np.int(ndata/2),0))*(2.0*pi/ndata)
         
         cdef np.ndarray[np.int8_t,ndim=1] data = np.empty(self.win, dtype=np.int8)
         cdef np.ndarray[np.float64_t,ndim=1] data2 = np.empty(ndata, dtype=np.float64)

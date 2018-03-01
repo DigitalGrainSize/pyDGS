@@ -87,8 +87,8 @@ import sys #, getopt, os, glob
 #from PIL.Image import open as imopen
 
 if sys.version_info >= (3, 0):
-   from . import cwt
-   from . import sgolay
+   from DGS import cwt
+   from DGS import sgolay
 else:
    import cwt
    import sgolay
@@ -128,14 +128,14 @@ def rescale(dat,mn,mx):
 
 # =========================================================
 def get_me(useregion, maxscale, notes, density): #, mult):
-   complete=0
-   while complete==0:
-      try:
-         dat = cwt.Cwt(np.asarray(useregion,'int8'), maxscale, notes, density) #, mult)
-         if 'dat' in locals(): 
-            complete=1
-      except:
-         density = density +1
+   #complete=0
+   #while complete==0:
+   #   try:
+   dat = cwt.Cwt(np.asarray(useregion,'int8'), maxscale, notes, density) #, mult)
+   #if 'dat' in locals(): 
+   #   complete=1
+   #   except:
+   #      density = density +1
 
    return dat.getvar(), (np.pi/2)*dat.getscales()
 
@@ -173,7 +173,7 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
       print("====IMAGE OF SEDIMENT/GRANULAR MATERIAL====")
       print("===========================================")
       print("======A PROGRAM BY DANIEL BUSCOMBE=========")
-      print("========USGS, FLAGSTAFF, ARIZONA===========")
+      print("=========NAU, FLAGSTAFF, ARIZONA===========")
       print("========REVISION 3.0.5, DEC 2017===========")
       print("===========================================")
 
