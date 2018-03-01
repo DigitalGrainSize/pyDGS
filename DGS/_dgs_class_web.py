@@ -292,15 +292,15 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
    if verbose==1:
       print("mean size = "+str(mnsz)) 
 
-   srt = np.sqrt(np.sum(d*((scales-mnsz)**2)))
+   srt = np.sqrt(np.sum(r_v*((scales-mnsz)**2)))
    if verbose==1:
       print("stdev = "+str(srt))
 
-   sk = (sum(d*((scales-mnsz)**3)))/(100*srt**3)
+   sk = (sum(r_v*((scales-mnsz)**3)))/(100*srt**3)
    if verbose==1:
       print("skewness = "+str(sk))
 
-   kurt = (sum(d*((scales-mnsz)**4)))/(100*srt**4)
+   kurt = (sum(r_v*((scales-mnsz)**4)))/(100*srt**4)
    if verbose==1:
       print("kurtosis = "+str(kurt))
 
