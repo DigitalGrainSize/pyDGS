@@ -8,6 +8,8 @@ This program implements the algorithm of:
 
 [Buscombe, D. (2013) Transferable Wavelet Method for Grain-Size Distribution from Images of Sediment Surfaces and Thin Sections, and Other Natural Granular Patterns. Sedimentology 60, 1709-1732](https://www.danielbuscombe.com/s/Buscombe_2013_sedimentology_101111-sed12049.pdf)
 
+See also [Cuttler et al., 2017](https://www.danielbuscombe.com/s/Cuttler_et_al-2017-Sedimentology.pdf) for details on the implementation of the area-by-number to volume-by-number conversion
+
 
 ## Install:
 
@@ -18,6 +20,32 @@ python setup.py install
 sudo python setup.py install
 pip install pyDGS
 ```
+
+Alternatively, install from pypi
+
+``` bash
+pip install pyDGS
+```
+
+Or, install the provided conda environment
+
+``` bash
+conda env create -f binder\environment.yml
+conda activate DGS
+```
+
+If you intend to run the jupyter examples (see below), you may also need to install a jupyter kernel associated with the conda environment
+
+```
+python -m ipykernel install --user --name DGS --display-name "Python (dgs)"
+```
+
+## Run the jupyter examples
+
+```jupyter notebook```
+
+then head to the browser, navigate to notebooks folder, and launch a notebook
+
 
 ## Test:
 
@@ -42,6 +70,9 @@ python -c "import DGS; DGS.test.dotest()"
  * **maxscale** = maximum scale (pixels) as an inverse function of data (image row) length `[8][2 - 40]`
 *  **verbose** = if 1, print stuff to screen `[0][0 or 1]`
 *  **x** = area-by-number to volume-by-number conversion `[0] [-1 - +1]`
+
+See also [Cuttler et al., 2017](https://www.danielbuscombe.com/s/Cuttler_et_al-2017-Sedimentology.pdf) for details on the implementation of the area-by-number to volume-by-number conversion
+
 
 ### OUTPUT FOR A SINGLE IMAGE FILE:
 
@@ -129,14 +160,6 @@ Note that the larger the density parameter, the longer the execution time.
     Any use of trade, product, or firm names is for descriptive purposes only 
     and does not imply endorsement by the U.S. government.
 
-## Note for Windows Users
-
-I recommend the [Anaconda python distribution for Windows](https://conda.io/docs/user-guide/install/windows.html) which includes all of the library dependencies required to run this program. Anaconda comes with a variety of IDEs and is pretty easy to use. To run the test images, launch the Anaconda command terminal and type:
-
-``` bash
-pip install pyDGS
-python -c "import DGS; DGS.test.dotest()"
-```
 
 ## Contributing & Credits
 

@@ -86,12 +86,16 @@ import numpy as np
 import sys #, getopt, os, glob
 #from PIL.Image import open as imopen
 
-if sys.version_info >= (3, 0):
-   from DGS import cwt
-   from DGS import sgolay
-else:
-   import cwt
-   import sgolay
+try:
+   if sys.version_info >= (3, 0):
+      from DGS import cwt
+      from DGS import sgolay
+   else:
+      import cwt
+      import sgolay
+except:
+   from . import cwt
+   from . import sgolay
 
 try:
    from imread import imread
@@ -248,7 +252,7 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
    # ======= stage 2 ==========================
    # if requested, call sgolay to filter image
    if dofilter==1:
-      useregion = filter_me(region) #, mn, nx, ny)
+      useregion = filter_me(region.astype('float64')) #, mn, nx, ny)
       useregion[region==255] = 0   
 
    else: #no filtering
