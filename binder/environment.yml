@@ -1,0 +1,12 @@
+name: DGS
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python
+  - ipython
+  - jupyter  
+  - notebook  
+  - pip
+  - pip:
+    - pyDGS

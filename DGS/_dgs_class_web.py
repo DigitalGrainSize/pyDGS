@@ -174,7 +174,7 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
       print("===========================================")
       print("======A PROGRAM BY DANIEL BUSCOMBE=========")
       print("=========NAU, FLAGSTAFF, ARIZONA===========")
-      print("========REVISION 3.0.5, DEC 2017===========")
+      print("========REVISION 3.0.12, OCT 2018===========")
       print("===========================================")
 
    # exit program if no input folder given

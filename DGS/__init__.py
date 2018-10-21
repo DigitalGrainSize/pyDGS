@@ -14,7 +14,7 @@ https://www.danielbuscombe.com/s/Buscombe_2013_sedimentology_101111-sed12049.pdf
            Northern Arizona University
            Flagstaff, AZ 86001
            daniel.buscombe@nau.edu
- Revision Dec 21, 2017
+ Revision Oct 21, 2018
  First Revision January 18 2013
 
 For more information visit https://github.com/dbuscombe-usgs/pyDGS
@@ -38,7 +38,7 @@ daniel.buscombe@nau.edu
     
 """
 
-__version__ = '3.0.11'
+__version__ = '3.0.12'
 
 #-----------------------------------------------------------------------------
 # Imports

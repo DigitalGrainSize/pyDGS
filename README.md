@@ -41,7 +41,7 @@ python -c "import DGS; DGS.test.dotest()"
  * **notes** = notes per octave to consider in continuous wavelet transform `[8][1 - 8]`
  * **maxscale** = maximum scale (pixels) as an inverse function of data (image row) length `[8][2 - 40]`
 *  **verbose** = if 1, print stuff to screen `[0][0 or 1]`
-*  **x** = area-by-number to volume-by-number conversion `[0] [-1 - 1]`
+*  **x** = area-by-number to volume-by-number conversion `[0] [-1 - +1]`
 
 ### OUTPUT FOR A SINGLE IMAGE FILE:
 
@@ -148,7 +148,7 @@ Buscombe, D. (2013) Transferable Wavelet Method for Grain-Size Distribution from
 >          Flagstaff, AZ 86001  
 >          daniel.buscombe@nau.edu
 
- Revision: Dec 21, 2017  
+ Revision: Oct 21, 2018 
  First Revision: January 18 2013
 
 For more information visit <https://github.com/dbuscombe-usgs/pyDGS>
@@ -160,7 +160,7 @@ Please contact:
 
 to report bugs and discuss the code, algorithm, collaborations
 
-DO NOT EMAIL dbuscombe@usgs.gov!!!
+> DO NOT EMAIL dbuscombe@usgs.gov - that email is never checked!!!
 
 For the latest code version please visit:
 <https://github.com/dbuscombe-usgs>
