@@ -100,6 +100,9 @@ cdef class Cwt:
 
         for i from 0 <= i < lr:  
            data = np.asarray( self._column(matrix, np.int(self.r[i]) ) )
+           ind = np.where(data==0)[0] #deal with unmasked portion of image
+           if len(ind)>0:		   
+              data = data[:ind[0]]		   
            data2 = self._pad2nxtpow2(data - np.mean(data), base2) 
                       
            datahat = np.fft.fft(data2)

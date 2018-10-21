@@ -12,7 +12,7 @@ Buscombe, D. (2013) Transferable Wavelet Method for Grain-Size Distribution from
            Northern Arizona University
            Flagstaff, AZ 86001
            daniel.buscombe@nau.edu
- Revision Dec 21, 2017
+ Revision Oct 21, 2018
  First Revision January 18 2013
 
 For more information visit https://github.com/dbuscombe-usgs/pyDGS
@@ -244,12 +244,15 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
    #nx, ny = np.shape(region)
    #mn = min(nx,ny)
 
+   
    # ======= stage 2 ==========================
    # if requested, call sgolay to filter image
    if dofilter==1:
       useregion = filter_me(region) #, mn, nx, ny)
+      useregion[region==255] = 0   
 
    else: #no filtering
+      region[region==255] = 0   
       useregion = rescale(region,0,255)
 
    # ======= stage 3 ==========================

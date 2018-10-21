@@ -158,8 +158,9 @@ For more information visit <https://github.com/dbuscombe-usgs/pyDGS>
 Please contact:
 <daniel.buscombe@nau.edu>
 
-
 to report bugs and discuss the code, algorithm, collaborations
+
+DO NOT EMAIL dbuscombe@usgs.gov!!!
 
 For the latest code version please visit:
 <https://github.com/dbuscombe-usgs>
