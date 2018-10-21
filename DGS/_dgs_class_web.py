@@ -252,7 +252,7 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
    # ======= stage 2 ==========================
    # if requested, call sgolay to filter image
    if dofilter==1:
-      useregion = filter_me(region.astype('float64')) #, mn, nx, ny)
+      useregion = filter_me(region) #, mn, nx, ny)
       useregion[region==255] = 0   
 
    else: #no filtering
