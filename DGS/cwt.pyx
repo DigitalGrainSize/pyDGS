@@ -91,10 +91,8 @@ cdef class Cwt:
         self.cwt = cwt
         cdef np.ndarray[np.float64_t, ndim=1] omega = np.empty(ndata, dtype=np.float64)
 		
-        try:
-           omega = np.array(range(0,np.int(ndata/2))+range(-np.int(ndata/2),0))*(2.0*pi/ndata)
-        except:
-           omega = np.array(list(range(0,np.int(ndata/2)))+list(range(-np.int(ndata/2),0)))*(2.0*pi/ndata)
+        #omega = np.array(range(0,np.int(ndata/2))+range(-np.int(ndata/2),0))*(2.0*pi/ndata)
+        omega = np.array(list(range(0,np.int(ndata/2)))+list(range(-np.int(ndata/2),0)))*(2.0*pi/ndata)
 		
         cdef np.ndarray[np.int8_t,ndim=1] data = np.empty(self.win, dtype=np.int8)
         cdef np.ndarray[np.float64_t,ndim=1] data2 = np.empty(ndata, dtype=np.float64)
