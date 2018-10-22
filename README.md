@@ -48,8 +48,11 @@ then head to the browser, navigate to notebooks folder, and launch a notebook
 
 ## Run on binder
 
-![Masking images](https://hub.mybinder.org/user/dbuscombe-usgs-pydgs-r09yprh1/notebooks/notebooks/Masked_images.ipynb)
+https://mybinder.org/v2/gh/dbuscombe-usgs/pyDGS/master
 
+1. [Basic usage](https://hub.mybinder.org/user/dbuscombe-usgs-pydgs-1aag77c2/notebooks/notebooks/Basic_usage.ipynb)
+
+2. [Masking images](https://hub.mybinder.org/user/dbuscombe-usgs-pydgs-1aag77c2/notebooks/notebooks/Masked_images.ipynb)
 
 
 
