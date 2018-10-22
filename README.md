@@ -50,10 +50,9 @@ then head to the browser, navigate to notebooks folder, and launch a notebook
 
 https://mybinder.org/v2/gh/dbuscombe-usgs/pyDGS/master
 
-1. [Basic usage](https://hub.mybinder.org/user/dbuscombe-usgs-pydgs-1aag77c2/notebooks/notebooks/Basic_usage.ipynb)
+1. [Basic usage](https://hub.mybinder.org/user/dbuscombe-usgs-pydgs-hq6ucuuw/notebooks/notebooks/Basic_usage.ipynb)
 
-2. [Masking images](https://hub.mybinder.org/user/dbuscombe-usgs-pydgs-1aag77c2/notebooks/notebooks/Masked_images.ipynb)
-
+2. [Masking images](https://hub.mybinder.org/user/dbuscombe-usgs-pydgs-hq6ucuuw/notebooks/notebooks/Masked_images.ipynb)
 
 
 ## Test:
@@ -77,8 +76,8 @@ python -c "import DGS; DGS.test.dotest()"
  * **dofilter** = spatial resolution of image in mm/pixel `[1][0 or 1]`
  * **notes** = notes per octave to consider in continuous wavelet transform `[8][1 - 8]`
  * **maxscale** = maximum scale (pixels) as an inverse function of data (image row) length `[8][2 - 40]`
-*  **verbose** = if 1, print stuff to screen `[0][0 or 1]`
-*  **x** = area-by-number to volume-by-number conversion `[0] [-1 - +1]`
+ * **verbose** = if 1, print stuff to screen `[0][0 or 1]`
+ * **x** = area-by-number to volume-by-number conversion `[0] [-1 - +1]`
 
 See also [Cuttler et al., 2017](https://www.danielbuscombe.com/s/Cuttler_et_al-2017-Sedimentology.pdf) for details on the implementation of the area-by-number to volume-by-number conversion
 
