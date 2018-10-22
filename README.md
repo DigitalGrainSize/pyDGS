@@ -46,6 +46,12 @@ python -m ipykernel install --user --name DGS --display-name "Python (dgs)"
 
 then head to the browser, navigate to notebooks folder, and launch a notebook
 
+## Run on binder
+
+![Masking images](https://hub.mybinder.org/user/dbuscombe-usgs-pydgs-r09yprh1/notebooks/notebooks/Masked_images.ipynb)
+
+
+
 
 ## Test:
 
