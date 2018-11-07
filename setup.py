@@ -102,7 +102,7 @@ SETUP_DIRECTORY = os.path.dirname(os.path.abspath(inspect.getfile(
 # was previously created using Cython).
 # Set it to 'auto' to build with Cython if available, otherwise
 # from the C file.
-USE_CYTHON = True
+USE_CYTHON = False #True
 
 if USE_CYTHON:
    try:

@@ -50,10 +50,6 @@ then head to the browser, navigate to notebooks folder, and launch a notebook
 
 https://mybinder.org/v2/gh/dbuscombe-usgs/pyDGS/master
 
-1. [Basic usage](https://hub.mybinder.org/user/dbuscombe-usgs-pydgs-hq6ucuuw/notebooks/notebooks/Basic_usage.ipynb)
-
-2. [Masking images](https://hub.mybinder.org/user/dbuscombe-usgs-pydgs-hq6ucuuw/notebooks/notebooks/Masked_images.ipynb)
-
 
 ## Test:
 
