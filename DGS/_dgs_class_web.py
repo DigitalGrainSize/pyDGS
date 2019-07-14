@@ -231,8 +231,8 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
        #if len(np.shape(im))==3: # if rgb, convert to grey
        #   im = (0.299 * im[:,:,0] + 0.5870*im[:,:,1] + 0.114*im[:,:,2]).astype('uint8')
        im = Image.open(image).convert('LA')
-       im = np.array(im)[:,:,0]  
-       im = (im - np.mean(im)) / np.std(im)
+       im = np.array(im)[:,:,0].astype('uint8')
+       #im = (im - np.mean(im)) / np.std(im)
  
        nx,ny = np.shape(im)
        if nx>ny:
