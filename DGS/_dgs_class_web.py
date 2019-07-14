@@ -274,9 +274,9 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
 
    d, scales = get_me(useregion, maxscale, notes, density) #mult
 
-   d = d/np.sum(d)
-   d = d/(scales**0.5)
-   d = d/np.sum(d)
+#   d = d/np.sum(d)
+#   d = d/(scales**0.5)
+#   d = d/np.sum(d)
 
 #   # ======= stage 4 ==========================
 #   # trim particle size bins
