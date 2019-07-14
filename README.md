@@ -1,4 +1,3 @@
-***May - 2018 UPDATE: The online version of [pyDGS has been retired](docs/online.html). We encourage you to use it standalone as a `pip` module.***
 
 ## About
 
@@ -13,18 +12,8 @@ See also [Cuttler et al., 2017](https://www.danielbuscombe.com/s/Cuttler_et_al-2
 
 ## Install:
 
-From a shell with python and pip installed type the following:
-
 ``` bash
-python setup.py install
-sudo python setup.py install
-pip install pyDGS
-```
-
-Alternatively, install from pypi
-
-``` bash
-pip install pyDGS
+pip install git+https://github.com/dbuscombe-usgs/pyDGS.git
 ```
 
 Or, install the provided conda environment

@@ -97,10 +97,11 @@ except:
    from . import cwt
    from . import sgolay
 
-try:
-   from imread import imread
-except:
-   from scipy.misc import imread
+#try:
+#   from imread import imread
+#except:
+#   from scipy.misc import imread
+import Image
 
 from scipy.ndimage.interpolation import zoom
 
@@ -178,7 +179,7 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
       print("===========================================")
       print("======A PROGRAM BY DANIEL BUSCOMBE=========")
       print("=========NAU, FLAGSTAFF, ARIZONA===========")
-      print("========REVISION 3.0.12, OCT 2018===========")
+      print("========REVISION 3.0.13, JULY 2019=========")
       print("===========================================")
 
    # exit program if no input folder given
@@ -225,11 +226,14 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
    try:
        #im = imopen(image, flatten=1).astype('uint8')#.convert("L")
        #im = imread.imload(image, as_grey=True).astype('uint8')
-       im = imread(image)[:,:,:3] # read image up to 3 layers
-       im = np.squeeze(im) # squeeze singleton dimensions
-       if len(np.shape(im))==3: # if rgb, convert to grey
-          im = (0.299 * im[:,:,0] + 0.5870*im[:,:,1] + 0.114*im[:,:,2]).astype('uint8')
-
+       #im = imread(image)[:,:,:3] # read image up to 3 layers
+       #im = np.squeeze(im) # squeeze singleton dimensions
+       #if len(np.shape(im))==3: # if rgb, convert to grey
+       #   im = (0.299 * im[:,:,0] + 0.5870*im[:,:,1] + 0.114*im[:,:,2]).astype('uint8')
+       im = Image.open(image).convert('LA')
+       im = np.array(im)[:,:,0]  
+       im = (im - np.mean(im)) / np.std(im)
+ 
        nx,ny = np.shape(im)
        if nx>ny:
           im=im.T
