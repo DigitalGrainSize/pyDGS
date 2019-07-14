@@ -142,7 +142,7 @@ def get_me(useregion, maxscale, notes, density): #, mult):
    #   except:
    #      density = density +1
 
-   return dat.getvar(), (np.pi/2)*dat.getscales()
+   return dat.getvar(), dat.getscales() #(np.pi/2)*
 
 # =========================================================
 def filter_me(region):
@@ -275,24 +275,24 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
    d, scales = get_me(useregion, maxscale, notes, density) #mult
 
    d = d/np.sum(d)
-   d = d/(scales**0.5)
-   d = d/np.sum(d)
+#   d = d/(scales**0.5)
+#   d = d/np.sum(d)
 
-   # ======= stage 4 ==========================
-   # trim particle size bins
-   index = np.nonzero(scales<4*ny/maxscale)
-   scales = scales[index]
-   d = d[index]
-   d = d/np.sum(d)
+#   # ======= stage 4 ==========================
+#   # trim particle size bins
+#   index = np.nonzero(scales<4*ny/maxscale)
+#   scales = scales[index]
+#   d = d[index]
+#   d = d/np.sum(d)
 
-   index = np.nonzero(scales>np.pi*2)
-   scales = scales[index]
-   d = d[index]
-   d = d/np.sum(d)
-     
-   n = np.r_[0:len(scales)]-(len(scales)-1)/2
-   d = d*np.exp(-(0.5)*((np.pi/2)*n/((len(scales)-1)/2))**2)
-   d = d/np.sum(d)   
+#   index = np.nonzero(scales>np.pi*2)
+#   scales = scales[index]
+#   d = d[index]
+#   d = d/np.sum(d)
+#     
+#   n = np.r_[0:len(scales)]-(len(scales)-1)/2
+#   d = d*np.exp(-(0.5)*((np.pi/2)*n/((len(scales)-1)/2))**2)
+#   d = d/np.sum(d)   
 
    # get real scales by multiplying by resolution (mm/pixel)
    scales = scales*resolution
