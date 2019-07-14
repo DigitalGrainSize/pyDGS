@@ -101,7 +101,7 @@ except:
 #   from imread import imread
 #except:
 #   from scipy.misc import imread
-import Image
+import PIL.Image as Image
 
 from scipy.ndimage.interpolation import zoom
 
