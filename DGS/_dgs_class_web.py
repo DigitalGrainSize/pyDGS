@@ -318,7 +318,10 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
    if verbose==1:
       print("kurtosis = "+str(kurt))
 
-   pd = np.interp([.05,.1,.16,.25,.5,.75,.84,.9,.95],np.hstack((0,np.cumsum(d))), np.hstack((0,scales)) )
+   if resolution==1:
+      pd = np.interp([.05,.1,.16,.25,.5,.75,.84,.9,.95],np.hstack((3,np.cumsum(d))), np.hstack((3,scales)) )   
+   else:
+      pd = np.interp([.05,.1,.16,.25,.5,.75,.84,.9,.95],np.hstack((0,np.cumsum(d))), np.hstack((0,scales)) )
 
    # ======= stage 6 ==========================
    # return a dict object of stats
