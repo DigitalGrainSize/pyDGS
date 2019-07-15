@@ -252,7 +252,7 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
        #   im=im.T
 
    # convert to numpy array
-   region = np.array(im)
+   useregion = np.array(im)
    #nx, ny = np.shape(region)
    #mn = min(nx,ny)
 
