@@ -44,10 +44,10 @@ def dotest_web():
    resolution = 1
    density = 10
    dofilter=1
-   maxscale=8
-   notes=8
+   maxscale=2
+   notes=16
    verbose=1
-   x = -0.5
+   x = 1
 
    DGS.dgs(image, density, resolution, dofilter, maxscale, notes, verbose, x)
 

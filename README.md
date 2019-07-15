@@ -102,10 +102,10 @@ image_file = '/home/sed_images/my_image.png'
 density = 10 # process every 10 lines
 resolution = 0.01 # mm/pixel
 dofilter =1 # filter the image
-notes = 8 # notes per octave
-maxscale = 8 #Max scale as inverse fraction of data length
+notes = 16 # notes per octave
+maxscale = 2 #Max scale as inverse fraction of data length
 verbose = 1 # print stuff to screen
-x = -0.5
+x = 1
 dgs_stats = DGS.dgs(image_file, density, resolution, dofilter, maxscale, notes, verbose, x)
 ```
 
@@ -120,10 +120,10 @@ dgs_stats = DGS.dgs(image_file, density, resolution, dofilter, maxscale, notes, 
 * **density** = process every *density* lines of image [10][1 - 100]
 * **resolution** = spatial resolution of image in mm/pixel [1][>0]
 * **dofilter** = spatial resolution of image in mm/pixel [1][0 or 1]
-* **notes** = notes per octave to consider in continuous wavelet transform [8][1 - 8]
-* **maxscale** = maximum scale (pixels) as an inverse function of data (image row) length [8][2 - 40]
+* **notes** = notes per octave to consider in continuous wavelet transform [16][1 - 8]
+* **maxscale** = maximum scale (pixels) as an inverse function of data (image row) length [2][2 - 40]
 * **verbose** = if 1, print stuff to screen [0][0 or 1]
-* **x** = area-by-number to volume-by-number conversion [0] [-1 - 1]
+* **x** = calibration coefficient (nominally, area-by-number to volume-by-number conversion) [1] [-3 - 3]
 
 ### OUTPUT:
 
@@ -164,7 +164,7 @@ Buscombe, D. (2013) Transferable Wavelet Method for Grain-Size Distribution from
 >          Flagstaff, AZ 86001  
 >          daniel.buscombe@nau.edu
 
- Revision: Oct 21, 2018 
+ Revision: July 2019
  First Revision: January 18 2013
 
 For more information visit <https://github.com/dbuscombe-usgs/pyDGS>

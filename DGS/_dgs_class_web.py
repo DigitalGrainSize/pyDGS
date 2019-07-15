@@ -168,7 +168,7 @@ def filter_me(region):
 
 # =========================================================
 # =========================================================
-def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbose=0, x=0):
+def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbose=0, x=1):
 
    if verbose==1:
       print("===========================================")
@@ -219,6 +219,9 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
       print('Area to volume conversion constant = '+str(x))
 
    # ======= stage 1 ==========================
+   
+   percentiles = np.asarray([5,10,16,25,50,75,84,90,95])
+   
    # read image
    if verbose==1:
       print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -232,7 +235,8 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
        #   im = (0.299 * im[:,:,0] + 0.5870*im[:,:,1] + 0.114*im[:,:,2]).astype('uint8')
        im = Image.open(image).convert('LA')
        im = np.array(im)[:,:,0].astype('uint8')
-       #im = (im - np.mean(im)) / np.std(im)
+       im = (im - np.mean(im)) / np.std(im)
+       im = rescale(im, 0, 255).astype('uint8')
  
        nx,ny = np.shape(im)
        if nx>ny:
@@ -252,19 +256,19 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
    #nx, ny = np.shape(region)
    #mn = min(nx,ny)
 
-   
-   # ======= stage 2 ==========================
-   # if requested, call sgolay to filter image
-   if dofilter==1:
-      useregion = filter_me(region) #, mn, nx, ny)
-      try:
-         useregion[region==255] = 0   
-      except:
-         pass
+#   
+#   # ======= stage 2 ==========================
+#   # if requested, call sgolay to filter image
+#   if dofilter==1:
+#      useregion = filter_me(region) #, mn, nx, ny)
+#      try:
+#         useregion[region==255] = 0   
+#      except:
+#         pass
 
-   else: #no filtering
-      region[region==255] = 0   
-      useregion = rescale(region,0,255)
+#   else: #no filtering
+#      region[region==255] = 0   
+#      useregion = rescale(region,0,255)
 
    # ======= stage 3 ==========================
    # call cwt to get particle size distribution
@@ -318,17 +322,17 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
    if verbose==1:
       print("kurtosis = "+str(kurt))
 
-   pd = np.interp([.05,.1,.16,.25,.5,.75,.84,.9,.95],np.hstack((0.01,np.cumsum(d))), np.hstack((0.01,scales)) )
+   pd = np.interp(percentiles,np.hstack((0.01,np.cumsum(r_v))), np.hstack((0.01,scales)) )* np.exp(1/percentiles)   
 
    # ======= stage 6 ==========================
    # return a dict object of stats
-   return {'mean grain size': mnsz, 'grain size sorting': srt, 'grain size skewness': sk, 'grain size kurtosis': kurt, 'percentiles': [.05,.1,.16,.25,.5,.75,.84,.9,.95], 'percentile_values': pd, 'grain size frequencies': r_v, 'grain size bins': scales}
+   return {'mean grain size': mnsz, 'grain size sorting': srt, 'grain size skewness': sk, 'grain size kurtosis': kurt, 'percentiles': percentiles, 'percentile_values': pd, 'grain size frequencies': r_v, 'grain size bins': scales}
 
 
 # =========================================================
 # =========================================================
 if __name__ == '__main__':
 
-   dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbose=0, x=0)
+   dgs(image, density=10, resolution=1, dofilter=1, maxscale=2, notes=16, verbose=0, x=0)
 
 
