@@ -245,58 +245,14 @@ def dgs(image, density=10, resolution=1, dofilter=1, maxscale=8, notes=8, verbos
    except: # IOError:
        print('cannot open '+image)
        sys.exit(2)
-       #im = imread(image)
-
-       #nx,ny = np.shape(im)
-       #if nx>ny:
-       #   im=im.T
 
    # convert to numpy array
    useregion = np.array(im)
-   #nx, ny = np.shape(region)
-   #mn = min(nx,ny)
-
-#   
-#   # ======= stage 2 ==========================
-#   # if requested, call sgolay to filter image
-#   if dofilter==1:
-#      useregion = filter_me(region) #, mn, nx, ny)
-#      try:
-#         useregion[region==255] = 0   
-#      except:
-#         pass
-
-#   else: #no filtering
-#      region[region==255] = 0   
-#      useregion = rescale(region,0,255)
 
    # ======= stage 3 ==========================
    # call cwt to get particle size distribution
 
-   #while (np.shape(useregion)[0] / density) > 100:
-   #   density = density+1
-
-   d, scales = get_me(useregion, maxscale, notes, density) #mult
-
-#   d = d/np.sum(d)
-#   d = d/(scales**0.5)
-#   d = d/np.sum(d)
-
-#   # ======= stage 4 ==========================
-#   # trim particle size bins
-#   index = np.nonzero(scales<4*ny/maxscale)
-#   scales = scales[index]
-#   d = d[index]
-#   d = d/np.sum(d)
-
-#   index = np.nonzero(scales>np.pi*2)
-#   scales = scales[index]
-#   d = d[index]
-#   d = d/np.sum(d)
-#     
-#   n = np.r_[0:len(scales)]-(len(scales)-1)/2
-#   d = d*np.exp(-(0.5)*((np.pi/2)*n/((len(scales)-1)/2))**2)
-#   d = d/np.sum(d)   
+   d, scales = get_me(useregion, maxscale, notes, density) 
 
    # get real scales by multiplying by resolution (mm/pixel)
    scales = scales*resolution
