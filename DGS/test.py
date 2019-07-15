@@ -47,7 +47,7 @@ def dotest_web():
    maxscale=2
    notes=16
    verbose=1
-   x = 1
+   x = 0
 
    DGS.dgs(image, density, resolution, dofilter, maxscale, notes, verbose, x)
 
