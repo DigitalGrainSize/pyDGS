@@ -10,6 +10,4 @@ dependencies:
   - numpy
   - cython
   - matplotlib
-  - pip
-  - pip:
-    - pyDGS
+  - scipy

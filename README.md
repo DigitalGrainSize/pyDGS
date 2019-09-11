@@ -21,6 +21,8 @@ Or, install the provided conda environment
 ``` bash
 conda env create -f binder\environment.yml
 conda activate DGS
+cd ..
+pip install git+https://github.com/dbuscombe-usgs/pyDGS.git
 ```
 
 If you intend to run the jupyter examples (see below), you may also need to install a jupyter kernel associated with the conda environment
