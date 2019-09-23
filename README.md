@@ -63,8 +63,6 @@ Then copy the key into your github profile keys. For more information about how 
 You will be cloning your fork of the main repo, so replace YOURUSERNAME in the below code to clone the repo and set up a conda environment to run in
 
 ``` bash
-conda env create -f binder\environment.yml
-conda activate DGS
 cd ..
 pip install git+https://github.com/YOURUSERNAME/pyDGS.git
 ```
@@ -74,6 +72,7 @@ Now you can run pyDGS on the cloud.
 To run the jupyter notebooks, run the following command to run the jupyter notebook server
 
 ```
+cd pyDGS/notebooks
 jupyter notebook --NotebookApp.iopub_data_rate_limit=10000000
 ```
 
