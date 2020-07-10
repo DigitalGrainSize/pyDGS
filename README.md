@@ -9,7 +9,15 @@ Buscombe, D. (2013) Transferable Wavelet Method for Grain-Size Distribution from
 
 
 ## Install:
- install the provided conda environment
+
+download the code and change directory
+
+```
+git clone https://github.com/dbuscombe-usgs/pyDGS.git
+cd pyDGS
+```
+
+install the provided conda environment
 
 ```
 conda env create -f conda_env/pydgs.yml
@@ -20,6 +28,9 @@ Run tests:
 ```
 python test.py
 ```
+
+Adapt `test.py` to your own needs, to analyze your own imagery
+
 
 ### REQUIRED INPUTS:
 
@@ -71,3 +82,4 @@ For more information visit <https://github.com/dbuscombe-usgs/pyDGS>
 * more test data
 * improved image filtering, which now occurs as standard
 * improved test script to provide example usage
+* simpler to install. no code compilation, no pip support, no `setup.py` script
