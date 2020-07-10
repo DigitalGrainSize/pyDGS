@@ -13,7 +13,7 @@ Buscombe, D. (2013) Transferable Wavelet Method for Grain-Size Distribution from
 download the code and change directory
 
 ```
-git clone https://github.com/dbuscombe-usgs/pyDGS.git
+git clone --depth 1 https://github.com/dbuscombe-usgs/pyDGS.git
 cd pyDGS
 ```
 
