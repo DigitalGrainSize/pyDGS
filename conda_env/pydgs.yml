@@ -1,0 +1,15 @@
+##conda env create -f conda_env/pydgs.yml
+name: pydgs
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.6
+  - ipython
+  - numpy
+  - matplotlib
+  - imageio
+  - scikit-image
+  - pywavelets
+  - pandas
+  - tqdm
