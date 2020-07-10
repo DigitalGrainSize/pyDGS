@@ -52,8 +52,10 @@ def dotest_batch(folder, set=1, with_plot=False):
 
    if set==1:
       files = glob.glob(folder+os.sep+'IMG*.JPG')
+      files = [f for f in files if f.endswith('.JPG')]
    elif set==2:
       files = glob.glob(folder+os.sep+'IMG*.jpg')
+      files = [f for f in files if f.endswith('.jpg')]
    elif set==3:
       files = glob.glob(folder+os.sep+'*.tif')
 
