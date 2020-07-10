@@ -29,6 +29,8 @@ Run tests:
 python test.py
 ```
 
+Test results are written to `demo_results`. Imagery is in `data`
+
 Adapt `test.py` to your own needs, to analyze your own imagery
 
 
