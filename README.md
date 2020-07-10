@@ -38,8 +38,6 @@ Adapt `test.py` to your own needs, to analyze your own imagery
 
 ### OPTIONAL INPUTS
 
-#### ***`[default values][range of acceptable values]`***
-
  * `resolution` = spatial resolution of image in mm/pixel `[1][>0]`. For results in pixels, use resolution = 1
  * `verbose` = if 1, prints grain size statistics to screen `[0][0 or 1]`
  * `x` = area-by-number to volume-by-number conversion `[0] [-1 - +1]`
