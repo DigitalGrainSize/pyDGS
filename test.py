@@ -68,14 +68,14 @@ def dotest_batch(folder, set=1, with_plot=False):
    maxscale=4
 
    # if 1, prints grain size statistics to screen
-   verbose=1
+   verbose=0
 
    #this is the area to volume conversion coefficient. See Cuttler et al (provided)
    #you could also use it as an empirical tuning coefficient against field data (recommended)
    x = 0
 
    ALL_RES = []
-   for f in files:
+   for f in tqdm(files): #tqdm gives you a progress bar
       data_out = dgs(f, resolution, maxscale, verbose, x)
       ALL_RES.append(data_out)
 
@@ -92,9 +92,25 @@ def dotest_batch(folder, set=1, with_plot=False):
       F[files[counter]] = freqs_bins
       counter += 1
 
+   # convert into stats (rows) versus images (columns)
+   tmp = list(S.keys())
+   d = {tmp[0]: [k[1] for k in list(S[tmp[0]])]}
+   for k in range(1,len(tmp)):
+       d.update( {tmp[k]: [k[1] for k in list(S[tmp[k]])]} )
+
+   pd.DataFrame(data=d, index = ['mean grain size', 'grain size sorting', 'grain size skewness', 'grain size kurtosis']).to_csv('demo_results/stats_batch.csv')
+
+   # convert into percentiles (rows) versus images (columns)
+   tmp = list(P.keys())
+   d = {tmp[0]: P[tmp[0]]['percentile_values']}
+   for k in range(1,len(tmp)):
+       d.update( {tmp[k]: P[tmp[k]]['percentile_values'] } )
+
+   pd.DataFrame(data=d, index = P[tmp[0]]['percentiles']).to_csv('demo_results/percentiles_batch.csv')
+
    # write each to csv file
-   pd.DataFrame.from_dict(S).to_csv('demo_results/stats_batch.csv')
-   pd.DataFrame.from_dict(P).to_csv('demo_results/percentiles_batch.csv')
+   # pd.DataFrame.from_dict(S).to_csv('demo_results/stats_batch.csv')
+   # pd.DataFrame.from_dict(P).to_csv('demo_results/percentiles_batch.csv')
    pd.DataFrame.from_dict(F).to_csv('demo_results/freqs_bins_batch.csv')
 
    if with_plot == True:
