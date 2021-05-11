@@ -142,7 +142,7 @@ def dgs(image, resolution=1, maxscale=4, verbose=1, x=-0.5):
    # ======= stage 5 ==========================
    # calc particle size stats
 
-   pd = np.interp([.05,.1,.16,.25,.5,.75,.84,.9,.95],np.hstack((0,np.cumsum(r_v))), np.hstack((0,scales)) )
+   pd = np.interp([.05,.1,.16,.25,.3,.5,.75,.84,.9,.95],np.hstack((0,np.cumsum(r_v))), np.hstack((0,scales)) )
    if verbose==1:
       print("d50 = "+str(pd[4]))
 
@@ -166,7 +166,7 @@ def dgs(image, resolution=1, maxscale=4, verbose=1, x=-0.5):
 
    # ======= stage 6 ==========================
    # return a dict object of stats
-   return {'mean grain size': mnsz, 'grain size sorting': srt, 'grain size skewness': sk, 'grain size kurtosis': kurt, 'percentiles': [.05,.1,.16,.25,.5,.75,.84,.9,.95], 'percentile_values': pd, 'grain size frequencies': r_v, 'grain size bins': scales}
+   return {'mean grain size': mnsz, 'grain size sorting': srt, 'grain size skewness': sk, 'grain size kurtosis': kurt, 'percentiles': [.05,.1,.16,.25,.3,.5,.75,.84,.9,.95], 'percentile_values': pd, 'grain size frequencies': r_v, 'grain size bins': scales}
 
 
 # =========================================================
