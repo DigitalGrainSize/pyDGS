@@ -18,11 +18,35 @@ http://dbuscombe-usgs.github.io/docs/Buscombe2013_Sedimentology_sed12049.pdf
            Marda Science, LLC
            Flagstaff, AZ
            daniel@mardascience.com
- Revision July 10, 2020
+ Revision May 11, 2021
  First Revision January 18 2013
 
 For more information visit https://github.com/dbuscombe-usgs/pyDGS
 """
+
+# Written by Dr Daniel Buscombe, Marda Science LLC
+#
+# MIT License
+#
+# Copyright (c) 2020, Marda Science LLC
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import numpy as np
 import sys, os
@@ -43,6 +67,19 @@ def rescale(dat,mn,mx):
     M = max(dat.flatten())
     return (mx-mn)*(dat-m)/(M-m)+mn
 
+##====================================
+def standardize(img):
+    img = np.array(img)
+    #standardization using adjusted standard deviation
+    N = np.shape(img)[0] * np.shape(img)[1]
+    s = np.maximum(np.std(img), 1.0/np.sqrt(N))
+    m = np.mean(img)
+    img = (img - m) / s
+    img = rescale(img, 0, 1)
+    del m, s, N
+
+    return img
+
 # =========================================================
 # =========================================================
 def dgs(image, resolution=1, maxscale=4, verbose=1, x=-0.5):
@@ -56,7 +93,7 @@ def dgs(image, resolution=1, maxscale=4, verbose=1, x=-0.5):
       print("===========================================")
       print("======A PROGRAM BY DANIEL BUSCOMBE=========")
       print("====MARDASCIENCE, FLAGSTAFF, ARIZONA=======")
-      print("========REVISION 4.0, JULY 2020+===========")
+      print("========REVISION 4.1, MAY 2021+===========")
       print("===========================================")
 
    # exit program if no input folder given
@@ -67,18 +104,18 @@ def dgs(image, resolution=1, maxscale=4, verbose=1, x=-0.5):
    # print given arguments to screen and convert data type where necessary
    if image:
       print('Input image is '+image)
-
-   if resolution:
-      resolution = np.asarray(resolution,float)
-      print('Resolution is '+str(resolution))
-
-   if maxscale:
-      maxscale = np.asarray(maxscale,int)
-      print('Max scale as inverse fraction of data length: '+str(maxscale))
-
-   if x:
-      x = np.asarray(x, float)
-      print('Area to volume conversion constant = '+str(x))
+   #
+   # if resolution:
+   #    resolution = np.asarray(resolution,float)
+   #    print('Resolution is '+str(resolution))
+   #
+   # if maxscale:
+   #    maxscale = np.asarray(maxscale,int)
+   #    print('Max scale as inverse fraction of data length: '+str(maxscale))
+   #
+   # if x:
+   #    x = np.asarray(x, float)
+   #    print('Area to volume conversion constant = '+str(x))
 
    # ======= stage 1 ==========================
    # read image
@@ -98,12 +135,13 @@ def dgs(image, resolution=1, maxscale=4, verbose=1, x=-0.5):
        if nx>ny:
           im=im.T
 
+       im = standardize(im)
+
    except: # IOError:
        print('cannot open '+image)
        sys.exit(2)
 
    # # ======= stage 2 ==========================
-   im = np.array(im)
    # Denoised image using default parameters of `denoise_wavelet`
    sigma_est = estimate_sigma(im, multichannel=False, average_sigmas=True)
    region = denoise_wavelet(im, multichannel=False, rescale_sigma=True,
