@@ -61,7 +61,7 @@ Example usage
 
 ```
 python run_dgs.py -r 0.04
-python run_dgs.py -m 20')
+python run_dgs.py -m 20
 python run_dgs.py -r 0.04 -m 10 -x 0.5
 python run_dgs.py -r 0.04 -m 20 -x -0.1
 python run_dgs.py -x -0.5
