@@ -33,7 +33,7 @@ from tkinter.filedialog import askopenfilename, askdirectory
 from datetime import datetime
 
 #================================================================
-def do_dgs(resolution, maxscale, verbose, files):
+def do_dgs(resolution, maxscale, x, verbose, files):
 
    ALL_RES = []
    for f in tqdm(files): #tqdm gives you a progress bar
@@ -86,7 +86,10 @@ def do_dgs(resolution, maxscale, verbose, files):
    counter = 0
    cols = ['r','g','b','m','c','k','y'][:len(F)]
    for f in F:
-      plt.plot(F[f]['grain size bins'], F[f]['grain size frequencies'],cols[counter], lw=2, label=files[counter].split(os.sep)[-1])
+      try:
+         plt.plot(F[f]['grain size bins'], F[f]['grain size frequencies'],cols[counter], lw=2, label=files[counter].split(os.sep)[-1])
+      except:
+         pass
       counter += 1
    plt.legend(fontsize=6)
 
@@ -139,7 +142,7 @@ if __name__ == '__main__':
         elif opt in ("-r"):
             resolution = arg
             resolution = float(resolution)
-        elif opt in ("-r"):
+        elif opt in ("-m"):
             maxscale = arg
             maxscale = int(maxscale)
         elif opt in ("-x"):
@@ -179,6 +182,6 @@ if __name__ == '__main__':
        x = np.asarray(x, float)
        print('Area to volume conversion constant = '+str(x))
 
-    do_dgs(resolution, maxscale, verbose, files)
+    do_dgs(resolution, maxscale, x, verbose, files)
 
 ##
