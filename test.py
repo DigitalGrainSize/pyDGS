@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2020, Marda Science LLC
+# Copyright (c) 2020-22, Marda Science LLC
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -33,11 +33,11 @@ plt.style.use('fivethirtyeight')
 def dotest1(image, with_plot=False):
    # if this is 1, it means "give me the results in pixels - I'll apply my own scaling"
    # otherwise, it is mm/pixel (if you want your results in mm) or um/pixel for microns
-   resolution = .04
+   resolution = 1 #.04
 
    #the maximum scale (grain size) considered by the wavelet is the horizontal width dimension divided by this number
    #so if your image is 1000 pixels wide and maxscale=4, only grains up to 1000/4 = 250 pixels are considered
-   maxscale=20
+   maxscale=10 
 
    # if 1, prints grain size statistics to screen
    verbose=1
@@ -87,16 +87,16 @@ def dotest_batch(folder, set=1, with_plot=False):
    if set==1:
       files = glob.glob(folder+os.sep+'IMG*.JPG')
       files = [f for f in files if f.endswith('.JPG')]
-      resolution = .04
-      maxscale=20
+      resolution = 1#.04
+      maxscale=10 
    elif set==2:
       files = glob.glob(folder+os.sep+'IMG*.jpg')
       files = [f for f in files if f.endswith('.jpg')]
-      resolution = .04
-      maxscale=20
+      resolution = 1#.04
+      maxscale=10 
    elif set==3:
       files = glob.glob(folder+os.sep+'*.tif')
-      resolution = .04
+      resolution =1# .04
       maxscale=10
 
    # if this is 1, it means "give me the results in pixels - I'll apply my own scaling"

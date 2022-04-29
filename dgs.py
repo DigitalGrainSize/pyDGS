@@ -18,7 +18,6 @@ http://dbuscombe-usgs.github.io/docs/Buscombe2013_Sedimentology_sed12049.pdf
            Marda Science, LLC
            Flagstaff, AZ
            daniel@mardascience.com
- Revision May 11, 2021
  First Revision January 18 2013
 
 For more information visit https://github.com/dbuscombe-usgs/pyDGS
@@ -28,7 +27,7 @@ For more information visit https://github.com/dbuscombe-usgs/pyDGS
 #
 # MIT License
 #
-# Copyright (c) 2020, Marda Science LLC
+# Copyright (c) 2020-22, Marda Science LLC
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -57,6 +56,7 @@ from skimage.restoration import denoise_wavelet, estimate_sigma
 from functools import partial
 # rescale_sigma=True required to silence deprecation warnings
 _denoise_wavelet = partial(denoise_wavelet, rescale_sigma=True)
+import scipy.stats as stats
 
 # =========================================================
 def rescale(dat,mn,mx):
@@ -93,7 +93,7 @@ def dgs(image, resolution=1, maxscale=4, verbose=1, x=-0.5):
       print("===========================================")
       print("======A PROGRAM BY DANIEL BUSCOMBE=========")
       print("====MARDASCIENCE, FLAGSTAFF, ARIZONA=======")
-      print("========REVISION 4.1, MAY 2021+===========")
+      print("========REVISION 4.2, APR 2022===========")
       print("===========================================")
 
    # exit program if no input folder given
@@ -143,9 +143,14 @@ def dgs(image, resolution=1, maxscale=4, verbose=1, x=-0.5):
 
    # # ======= stage 2 ==========================
    # Denoised image using default parameters of `denoise_wavelet`
-   sigma_est = estimate_sigma(im, multichannel=False, average_sigmas=True)
-   region = denoise_wavelet(im, multichannel=False, rescale_sigma=True,
-                              method='VisuShrink', mode='soft', sigma=sigma_est*2)
+   filter=False
+
+   if filter:
+      sigma_est = estimate_sigma(im, multichannel=False, average_sigmas=True)
+      region = denoise_wavelet(im, multichannel=False, rescale_sigma=True,
+                                 method='VisuShrink', mode='soft', sigma=sigma_est*2)
+   else:
+      region = im.copy()
 
    original = rescale(region,0,255)
 
@@ -154,24 +159,49 @@ def dgs(image, resolution=1, maxscale=4, verbose=1, x=-0.5):
    # ======= stage 3 ==========================
    # call cwt to get particle size distribution
 
-   P = []
-   for k in tqdm(np.linspace(1,nx-1,100)):
-      [cfs, frequencies] = pywt.cwt(original[int(k),:], np.arange(1, ny/maxscale, 2),  'morl' , .5)
+   # P = []
+   # for k in tqdm(np.linspace(1,nx-1,100)):
+   #    [cfs, frequencies] = pywt.cwt(original[int(k),:], np.arange(1, ny/maxscale, 2),  'morl' , .5)
+   #    period = 1. / frequencies
+   #    power =(abs(cfs)) ** 2
+   #    P.append(np.mean(np.abs(power), axis=1)/(period**2))
+
+   # p = np.mean(np.vstack(P), axis=0)
+   # p = np.array(p/np.sum(p))
+
+   # #plt.plot(period, p,'m', lw=2); plt.show()
+
+   # # get real scales by multiplying by resolution (mm/pixel)
+   # scales = np.array(period)*resolution
+
+   # ind = np.where(scales>2*np.pi)[0]
+   # scales = scales[ind]
+   # p = p[ind]
+   # p = p/np.sum(p)
+
+   P = []; M = []
+   for k in np.linspace(1,nx-1,100):
+      [cfs, frequencies] = pywt.cwt(original[int(k),:], np.arange(3, np.maximum(nx,ny)/maxscale, 1),  'morl' , .5)
       period = 1. / frequencies
       power =(abs(cfs)) ** 2
-      P.append(np.mean(np.abs(power), axis=1)/(period**2))
+      power = np.mean(np.abs(power), axis=1)/(period**2)
+      P.append(power)
+
+      M.append(period[np.argmax(power)])
 
    p = np.mean(np.vstack(P), axis=0)
    p = np.array(p/np.sum(p))
 
-   #plt.plot(period, p,'m', lw=2); plt.show()
-
    # get real scales by multiplying by resolution (mm/pixel)
    scales = np.array(period)*resolution
 
-   ind = np.where(scales>2*np.pi)[0]
-   scales = scales[ind]
-   p = p[ind]
+   srt = np.sqrt(np.sum(p*((scales-np.mean(M))**2)))
+
+   # plt.plot(scales, p,'m', lw=2)
+
+   p = p+stats.norm.pdf(scales, np.mean(M), srt/2)
+   p = np.hstack([0,p])
+   scales = np.hstack([0,scales])
    p = p/np.sum(p)
 
    # area-by-number to volume-by-number

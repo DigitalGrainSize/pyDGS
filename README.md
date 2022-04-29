@@ -1,7 +1,7 @@
 
 ## About
 
-pydgs is an open-source project dedicated to provide a Python framework to compute estimates of grain size distribution  using the continuous wavelet transform method of Buscombe (2013) from an image of sediment where grains are clearly resolved. It doesn't require calibration, but does require scaling. It works best for well-sorted sands and gravels. It doesn't work so well for mixtures or subpixel grains - you might have better luck with my other program [SediNet](https://github.com/MARDAScience/SediNet)
+pydgs is an open-source project dedicated to provide a Python framework to compute estimates of grain size distribution  using the continuous wavelet transform method of Buscombe (2013) from an image of sediment where grains are clearly resolved. It doesn't require calibration, but does require scaling. It works best for well-sorted sands and gravels. It may not work so well for bimodal mixtures or subpixel grains - you may or might not have better luck with my other program [SediNet](https://github.com/MARDAScience/SediNet)
 
 This program implements the algorithm of:
 
@@ -102,7 +102,7 @@ Buscombe, D. (2013) Transferable Wavelet Method for Grain-Size Distribution from
 >          (formerly of NAU and USGS and Plymouth University)
 >          Flagstaff, AZ   
 
- Revision: May 2021
+ Revision: April 2022
  First Revision: January 18 2013
 
 For more information visit <https://github.com/dbuscombe-usgs/pyDGS>

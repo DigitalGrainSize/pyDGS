@@ -2,7 +2,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2020, Marda Science LLC
+# Copyright (c) 2020-22, Marda Science LLC
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -153,7 +153,7 @@ if __name__ == '__main__':
         resolution = 1
         print('Warning: no resolution in mm/px specified, using %i by default' % (resolution))
     if 'maxscale' not in locals():
-        maxscale = 20
+        maxscale = 5
         print('Warning: specify a maxscale for best results, using %i by default' % (maxscale))
     if 'x' not in locals():
         x = 0.0
