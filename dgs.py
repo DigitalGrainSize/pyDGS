@@ -212,7 +212,7 @@ def dgs(image, resolution=1, maxscale=4, verbose=1, x=-0.5):
 
    pd = np.interp([.05,.1,.16,.25,.3,.5,.75,.84,.9,.95],np.hstack((0,np.cumsum(r_v))), np.hstack((0,scales)) )
    if verbose==1:
-      print("d50 = "+str(pd[4]))
+      print("d50 = "+str(pd[5]))
 
    mnsz = np.sum(r_v*scales)
    if verbose==1:
