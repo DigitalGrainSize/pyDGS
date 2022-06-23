@@ -13,3 +13,7 @@ dependencies:
   - pywavelets
   - pandas
   - tqdm
+  - pip
+  - pip:
+    - dataclasses 
+
