@@ -4,7 +4,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.6
+  - python
   - ipython
   - numpy
   - matplotlib
@@ -13,7 +13,4 @@ dependencies:
   - pywavelets
   - pandas
   - tqdm
-  - pip
-  - pip:
-    - dataclasses 
 
