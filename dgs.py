@@ -82,7 +82,7 @@ def standardize(img):
 
 # =========================================================
 # =========================================================
-def dgs(image, resolution=1, maxscale=4, verbose=1, x=-0.5):
+def dgs(image, resolution=1, maxscale=4, verbose=1, x=-0.5, filter=False):
 
    if verbose==1:
       print("===========================================")
@@ -104,18 +104,18 @@ def dgs(image, resolution=1, maxscale=4, verbose=1, x=-0.5):
    # print given arguments to screen and convert data type where necessary
    if image:
       print('Input image is '+image)
-   #
+   # #
    # if resolution:
    #    resolution = np.asarray(resolution,float)
    #    print('Resolution is '+str(resolution))
-   #
+   
    # if maxscale:
    #    maxscale = np.asarray(maxscale,int)
    #    print('Max scale as inverse fraction of data length: '+str(maxscale))
-   #
+   
    # if x:
    #    x = np.asarray(x, float)
-   #    print('Area to volume conversion constant = '+str(x))
+   #    print('Empirical constant = '+str(x))
 
    # ======= stage 1 ==========================
    # read image
@@ -143,7 +143,7 @@ def dgs(image, resolution=1, maxscale=4, verbose=1, x=-0.5):
 
    # # ======= stage 2 ==========================
    # Denoised image using default parameters of `denoise_wavelet`
-   filter=False
+   # filter=False
 
    if filter:
       sigma_est = estimate_sigma(im, multichannel=False, average_sigmas=True)
@@ -159,29 +159,9 @@ def dgs(image, resolution=1, maxscale=4, verbose=1, x=-0.5):
    # ======= stage 3 ==========================
    # call cwt to get particle size distribution
 
-   # P = []
-   # for k in tqdm(np.linspace(1,nx-1,100)):
-   #    [cfs, frequencies] = pywt.cwt(original[int(k),:], np.arange(1, ny/maxscale, 2),  'morl' , .5)
-   #    period = 1. / frequencies
-   #    power =(abs(cfs)) ** 2
-   #    P.append(np.mean(np.abs(power), axis=1)/(period**2))
-
-   # p = np.mean(np.vstack(P), axis=0)
-   # p = np.array(p/np.sum(p))
-
-   # #plt.plot(period, p,'m', lw=2); plt.show()
-
-   # # get real scales by multiplying by resolution (mm/pixel)
-   # scales = np.array(period)*resolution
-
-   # ind = np.where(scales>2*np.pi)[0]
-   # scales = scales[ind]
-   # p = p[ind]
-   # p = p/np.sum(p)
-
    P = []; M = []
    for k in np.linspace(1,nx-1,100):
-      [cfs, frequencies] = pywt.cwt(original[int(k),:], np.arange(3, np.maximum(nx,ny)/maxscale, 1),  'morl' , .5)
+      [cfs, frequencies] = pywt.cwt(original[int(k),:], np.arange(3, np.minimum(nx,ny)/maxscale, 1),  'morl' , .5)
       period = 1. / frequencies
       power =(abs(cfs)) ** 2
       power = np.mean(np.abs(power), axis=1)/(period**2)
@@ -247,4 +227,4 @@ def dgs(image, resolution=1, maxscale=4, verbose=1, x=-0.5):
 # =========================================================
 if __name__ == '__main__':
 
-   dgs(image, resolution=1, maxscale=8, verbose=0, x=-1)
+   dgs(image, resolution=1, maxscale=8, verbose=0, x=-1, filter=False)

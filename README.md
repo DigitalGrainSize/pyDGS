@@ -32,6 +32,9 @@ conda env create -f conda_env/pydgs.yml
 conda activate pydgs
 ```
 
+Or make your own environment
+
+
 Run tests:
 ```
 python test.py

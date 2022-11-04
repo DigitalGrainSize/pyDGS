@@ -33,11 +33,11 @@ from tkinter.filedialog import askopenfilename, askdirectory
 from datetime import datetime
 
 #================================================================
-def do_dgs(resolution, maxscale, x, verbose, files):
+def do_dgs(resolution, maxscale, x, verbose, files, filter):
 
    ALL_RES = []
    for f in tqdm(files): #tqdm gives you a progress bar
-      data_out = dgs(f, 1, maxscale, verbose, x)
+      data_out = dgs(f, 1, maxscale, verbose, x, filter)
       ALL_RES.append(data_out)
 
    ## parse out dict into three separate dictionaries
@@ -109,7 +109,7 @@ if __name__ == '__main__':
 
     argv = sys.argv[1:]
     try:
-        opts, args = getopt.getopt(argv,"h:r:m:x:")
+        opts, args = getopt.getopt(argv,"h:r:m:x:f:")
     except getopt.GetoptError:
         print('======================================')
         print('python run_dgs.py') #
@@ -148,6 +148,9 @@ if __name__ == '__main__':
         elif opt in ("-x"):
             x = arg
             x = float(x)
+        elif opt in ("-f"):
+            f = arg
+            f = float(f)
 
     if 'resolution' not in locals():
         resolution = 1
@@ -158,6 +161,13 @@ if __name__ == '__main__':
     if 'x' not in locals():
         x = 0.0
         print('Warning: specify "x" for best results, using %f by default' % (x))
+
+    if 'f' not in locals():
+        f = False
+    elif f==0:
+        f = False 
+    elif f==1:
+        f = True
 
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
     files = askopenfilename(title='Select image files', multiple=True, filetypes=[("Pick files","*.*")])

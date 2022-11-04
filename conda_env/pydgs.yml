@@ -1,10 +1,10 @@
 ##conda env create -f conda_env/pydgs.yml
-name: pydgs
+name: pydgs2
 channels:
   - conda-forge
   - defaults
 dependencies:
-  - python
+  - python=3.10
   - ipython
   - numpy
   - matplotlib
