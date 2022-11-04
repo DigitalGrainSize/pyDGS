@@ -192,8 +192,7 @@ def dgs(image, resolution=1, maxscale=4, verbose=1, x=-0.5):
    p = np.mean(np.vstack(P), axis=0)
    p = np.array(p/np.sum(p))
 
-   # get real scales by multiplying by resolution (mm/pixel)
-   scales = np.array(period)*resolution
+   scales = np.array(period)#*resolution
 
    srt = np.sqrt(np.sum(p*((scales-np.mean(M))**2)))
 
@@ -204,8 +203,15 @@ def dgs(image, resolution=1, maxscale=4, verbose=1, x=-0.5):
    scales = np.hstack([0,scales])
    p = p/np.sum(p)
 
+   ind = np.where(p>0)
+   p = p[ind]
+   scales = scales[ind]
+
    # area-by-number to volume-by-number
    r_v = (p*scales**x) / np.sum(p*scales**x) #volume-by-weight proportion
+
+   # get real scales by multiplying by resolution (mm/pixel)
+   scales = np.array(period)*resolution
 
    # ======= stage 5 ==========================
    # calc particle size stats

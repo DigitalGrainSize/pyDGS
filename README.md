@@ -41,7 +41,7 @@ Test results are written to `demo_results`. Imagery is in `data`
 
 ### <a name="RUN_DGS.PY"></a>RUN_DGS.PY:
 
-Adapt `test.py` to your own needs, to analyze your own imagery
+Adapt `test.py` to your own needs, to analyze your own imagery (recommended)
 
 Or use the provided script
 
@@ -56,6 +56,8 @@ so if your image is 2000 pixels wide and maxscale=8, only grains up to 2000/8 = 
 
 **this is the area to volume conversion coefficient. See Cuttler et al (provided)')
 you could also use it as an empirical tuning coefficient against field data (recommended)')
+
+Note that you have to experiment a little with values of both 'm' and 'x' to get good results. 
 
 Example usage
 
@@ -78,6 +80,9 @@ python run_dgs.py -x -0.5
  * `maxscale` =  the maximum scale (grain size) considered by the wavelet is the horizontal width dimension divided by this number. So if your image is 1000 pixels wide and maxscale=4, only grains up to 1000/4 = 250 pixels are considered
 
 See also Cuttler et al., 2017 (in `docs`) for details on the implementation of the area-by-number to volume-by-number conversion. You could also use it as an empirical tuning coefficient against field data (recommended)
+
+There is a hidden filter in the program that can be activated by changing `filter=False` (in `dgs.py`) to `filter=True`, which may help accuracy in some cases. By default, `filter=False` and the filter is not used. The filter is a wavelet denoiser.
+
 
 
 ### <a name="outputs"></a> OUTPUT FOR A SINGLE IMAGE FILE:
