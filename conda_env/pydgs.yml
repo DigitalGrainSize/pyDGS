@@ -1,5 +1,5 @@
 ##conda env create -f conda_env/pydgs.yml
-name: pydgs2
+name: pydgs
 channels:
   - conda-forge
   - defaults
