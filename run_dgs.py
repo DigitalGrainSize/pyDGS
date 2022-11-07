@@ -33,11 +33,11 @@ from tkinter.filedialog import askopenfilename, askdirectory
 from datetime import datetime
 
 #================================================================
-def do_dgs(resolution, maxscale, x, verbose, files, filter):
+def do_dgs(resolution, maxscale, x, verbose, files, f):
 
    ALL_RES = []
    for f in tqdm(files): #tqdm gives you a progress bar
-      data_out = dgs(f, 1, maxscale, verbose, x, filter)
+      data_out = dgs(f, 1, maxscale, verbose, x, f)
       ALL_RES.append(data_out)
 
    ## parse out dict into three separate dictionaries
@@ -132,10 +132,10 @@ if __name__ == '__main__':
             print('you could also use it as an empirical tuning coefficient against field data (recommended)')
             print('======================================')
             print('======================================')
-            print('Example usage: python run_dgs.py -r 0.04')
+            print('Example usage: python run_dgs.py -r 0.04 -f 0')
             print('Example usage: python run_dgs.py -m 20')
             print('Example usage: python run_dgs.py -r 0.04 -m 10 -x 0.5')
-            print('Example usage: python run_dgs.py -r 0.04 -m 20 -x -0.1')
+            print('Example usage: python run_dgs.py -r 0.04 -m 20 -x -0.1 -f 1')
             print('Example usage: python run_dgs.py -x -0.5')
             print('======================================')
             sys.exit()
@@ -150,7 +150,9 @@ if __name__ == '__main__':
             x = float(x)
         elif opt in ("-f"):
             f = arg
-            f = float(f)
+            f = int(f)
+
+    print(f)
 
     if 'resolution' not in locals():
         resolution = 1
@@ -161,13 +163,17 @@ if __name__ == '__main__':
     if 'x' not in locals():
         x = 0.0
         print('Warning: specify "x" for best results, using %f by default' % (x))
-
     if 'f' not in locals():
-        f = False
-    elif f==0:
-        f = False 
-    elif f==1:
-        f = True
+        f = 0
+        print('Warning: no filter specified. Using filter = {} by default'.format(f))
+
+    if f>1:
+        f = 0
+        print("Filter is 0 for False and 1 for True. Setting to False")
+
+    if f<0:
+        f = 0
+        print("Filter is 0 for False and 1 for True. Setting to False")
 
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
     files = askopenfilename(title='Select image files', multiple=True, filetypes=[("Pick files","*.*")])
@@ -192,6 +198,10 @@ if __name__ == '__main__':
        x = np.asarray(x, float)
        print('Area to volume conversion constant = '+str(x))
 
-    do_dgs(resolution, maxscale, x, verbose, files)
+    if f:
+       f = np.asarray(f, int)
+       print('Filter = '+str(f))
+
+    do_dgs(resolution, maxscale, x, verbose, files, f)
 
 ##

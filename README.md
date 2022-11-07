@@ -52,7 +52,7 @@ Or use the provided script
 
 Full syntax:
 
-`python run_dgs.py {-r resolution in mm per pixel (float)} {-m maxscale *see below (integer)} {-x "x" parameter **see below (float) }`
+`python run_dgs.py {-r resolution in mm per pixel (float)} {-m maxscale *see below (integer)} {-x "x" parameter **see below (float) {-f filter*** (0 or 1)} }`
 
 *the maximum scale (grain size) considered by the wavelet is the horizontal width dimension divided by this number
 so if your image is 2000 pixels wide and maxscale=8, only grains up to 2000/8 = 250 pixels are considered')
@@ -60,15 +60,17 @@ so if your image is 2000 pixels wide and maxscale=8, only grains up to 2000/8 = 
 **this is the area to volume conversion coefficient. See Cuttler et al (provided)')
 you could also use it as an empirical tuning coefficient against field data (recommended)')
 
+*** use 0 for False and 1 for True
+
 Note that you have to experiment a little with values of both 'm' and 'x' to get good results. 
 
 Example usage
 
 ```
-python run_dgs.py -r 0.04
+python run_dgs.py -r 0.04 -f 0
 python run_dgs.py -m 20
 python run_dgs.py -r 0.04 -m 10 -x 0.5
-python run_dgs.py -r 0.04 -m 20 -x -0.1
+python run_dgs.py -r 0.04 -m 20 -x -0.1 -f 1
 python run_dgs.py -x -0.5
 ```
 
@@ -81,6 +83,7 @@ python run_dgs.py -x -0.5
  * `resolution` = spatial resolution of image in mm/pixel `[1][>0]`. For results in pixels, use resolution = 1
  * `x` = area-by-number to volume-by-number conversion `[0] [-1 - +1]`
  * `maxscale` =  the maximum scale (grain size) considered by the wavelet is the horizontal width dimension divided by this number. So if your image is 1000 pixels wide and maxscale=4, only grains up to 1000/4 = 250 pixels are considered
+ * `filter` = apply a wavelet denoising filter. May help results in some cases (no guarantees!)
 
 See also Cuttler et al., 2017 (in `docs`) for details on the implementation of the area-by-number to volume-by-number conversion. You could also use it as an empirical tuning coefficient against field data (recommended)
 

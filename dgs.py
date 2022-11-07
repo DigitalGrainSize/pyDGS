@@ -82,7 +82,7 @@ def standardize(img):
 
 # =========================================================
 # =========================================================
-def dgs(image, resolution=1, maxscale=4, verbose=1, x=-0.5, filter=False):
+def dgs(image, resolution=1, maxscale=4, verbose=1, x=-0.5, f=0):
 
    if verbose==1:
       print("===========================================")
@@ -93,7 +93,7 @@ def dgs(image, resolution=1, maxscale=4, verbose=1, x=-0.5, filter=False):
       print("===========================================")
       print("======A PROGRAM BY DANIEL BUSCOMBE=========")
       print("====MARDASCIENCE, FLAGSTAFF, ARIZONA=======")
-      print("========REVISION 4.2, APR 2022===========")
+      print("========REVISION 4.3, NOV 2022===========")
       print("===========================================")
 
    # exit program if no input folder given
@@ -145,7 +145,7 @@ def dgs(image, resolution=1, maxscale=4, verbose=1, x=-0.5, filter=False):
    # Denoised image using default parameters of `denoise_wavelet`
    # filter=False
 
-   if filter:
+   if f==1:
       sigma_est = estimate_sigma(im, multichannel=False, average_sigmas=True)
       region = denoise_wavelet(im, multichannel=False, rescale_sigma=True,
                                  method='VisuShrink', mode='soft', sigma=sigma_est*2)
@@ -227,4 +227,4 @@ def dgs(image, resolution=1, maxscale=4, verbose=1, x=-0.5, filter=False):
 # =========================================================
 if __name__ == '__main__':
 
-   dgs(image, resolution=1, maxscale=8, verbose=0, x=-1, filter=False)
+   dgs(image, resolution=1, maxscale=8, verbose=0, x=-1, f=False)

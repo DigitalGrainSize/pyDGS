@@ -46,8 +46,11 @@ def dotest1(image, with_plot=False):
    #you could also use it as an empirical tuning coefficient against field data (recommended)
    x = 0
 
+   # 0 means do not apply denoising filter
+   filter = 0
+
    #I recommend you compute in pixels (resolution=1) then apply your resolution scaling afterwards
-   data_out = dgs(image, resolution, maxscale, verbose, x)
+   data_out = dgs(image, resolution, maxscale, verbose, x, filter)
 
    ## parse out dict into three separate dictionaries
    stats = dict(list(data_out.items())[:4])
@@ -112,9 +115,12 @@ def dotest_batch(folder, set=1, with_plot=False):
    #you could also use it as an empirical tuning coefficient against field data (recommended)
    x = 0
 
+   # 1 means apply denoising filter
+   filter = 1
+
    ALL_RES = []
    for f in tqdm(files): #tqdm gives you a progress bar
-      data_out = dgs(f, resolution, maxscale, verbose, x)
+      data_out = dgs(f, resolution, maxscale, verbose, x, filter)
       ALL_RES.append(data_out)
 
 
